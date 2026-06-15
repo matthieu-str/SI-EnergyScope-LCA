@@ -1,0 +1,1501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EnergyScope-LCA — Prospective & Regionalized Results</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,600;1,8..60,300&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #f2f4f7;
+      --surface: #ffffff;
+      --surface2: #ebeef3;
+      --border: #d5dae3;
+      --border-strong: #a8b0bf;
+      --text: #1b2130;
+      --text-muted: #5a6275;
+      --text-faint: #9099ad;
+      --accent: #2455a4;
+      --accent-light: #eaf0fb;
+      --accent2: #b84a00;
+      --accent2-light: #fdf0e8;
+      --accent3: #1e7a5a;
+      --accent3-light: #e8f5ef;
+      --sidebar-w: 270px;
+      --header-h: 58px;
+      --radius: 10px;
+      --mono: 'DM Mono', monospace;
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── Header ── */
+    header {
+      height: var(--header-h);
+      background: var(--accent);
+      display: flex;
+      align-items: center;
+      padding: 0 1.25rem;
+      gap: 0.9rem;
+      flex-shrink: 0;
+      z-index: 10;
+    }
+    .logo-mark {
+      width: 30px; height: 30px;
+      border: 2px solid rgba(255,255,255,0.4);
+      border-radius: 7px;
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--mono);
+      font-size: 11px;
+      color: white;
+      font-weight: 500;
+      letter-spacing: -0.03em;
+      flex-shrink: 0;
+    }
+    header h1 {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      font-weight: 400;
+      color: rgba(255,255,255,0.9);
+      letter-spacing: 0.005em;
+    }
+    header h1 strong { font-weight: 600; color: white; }
+    .header-divider {
+      width: 1px;
+      height: 20px;
+      background: rgba(255,255,255,0.25);
+      flex-shrink: 0;
+    }
+    .header-pill {
+      font-size: 11px;
+      font-family: var(--mono);
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.25);
+      color: rgba(255,255,255,0.85);
+      padding: 3px 9px;
+      border-radius: 20px;
+      letter-spacing: 0.01em;
+    }
+    .tab-group {
+      margin-left: auto;
+      display: flex;
+      gap: 3px;
+    }
+    .tab-btn {
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.18);
+      color: rgba(255,255,255,0.75);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 12.5px;
+      font-weight: 400;
+      padding: 5px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.15s;
+      white-space: nowrap;
+    }
+    .tab-btn:hover { background: rgba(255,255,255,0.18); color: white; }
+    .tab-btn.active {
+      background: white;
+      color: var(--accent);
+      font-weight: 500;
+      border-color: white;
+    }
+
+    /* ── Main layout ── */
+    .app-body {
+      display: flex;
+      flex: 1;
+      overflow: hidden;
+    }
+
+    /* ── Sidebar ── */
+    aside {
+      width: var(--sidebar-w);
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      overflow-y: auto;
+      flex-shrink: 0;
+      padding: 0.75rem 0;
+    }
+    aside::-webkit-scrollbar { width: 4px; }
+    aside::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+    .section-label {
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-faint);
+      padding: 0.65rem 1rem 0.3rem;
+    }
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 1rem;
+      font-size: 12.5px;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: background 0.1s, color 0.1s;
+      user-select: none;
+      border-left: 3px solid transparent;
+      line-height: 1.35;
+    }
+    .nav-item:hover { background: var(--bg); color: var(--text); }
+    .nav-item.active {
+      background: var(--accent-light);
+      color: var(--accent);
+      font-weight: 500;
+      border-left-color: var(--accent);
+    }
+    .nav-item svg {
+      width: 14px; height: 14px;
+      flex-shrink: 0;
+      opacity: 0.65;
+    }
+    .nav-item.active svg { opacity: 1; }
+    .nav-group-sep {
+      height: 1px;
+      background: var(--border);
+      margin: 0.5rem 1rem;
+    }
+
+    /* ── Content ── */
+    main {
+      flex: 1;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+    }
+    .pane { display: none; flex: 1; flex-direction: column; }
+    .pane.active { display: flex; }
+
+    /* ── Chart header ── */
+    .chart-header {
+      padding: 1rem 1.5rem 0.65rem;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface);
+      flex-shrink: 0;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+    .chart-header-left h2 {
+      font-family: 'Source Serif 4', serif;
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--text);
+    }
+    .chart-header-left p {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+    .unit-toggle {
+      display: flex;
+      gap: 3px;
+      flex-shrink: 0;
+    }
+    .unit-btn {
+      font-family: var(--mono);
+      font-size: 11px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      padding: 4px 10px;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: all 0.12s;
+    }
+    .unit-btn:hover { border-color: var(--border-strong); color: var(--text); }
+    .unit-btn.active {
+      background: var(--accent-light);
+      border-color: var(--accent);
+      color: var(--accent);
+      font-weight: 500;
+    }
+    .chart-frame-wrap {
+      flex: 1;
+      padding: 1rem 1.5rem 1.25rem;
+      display: flex;
+      flex-direction: column;
+    }
+    .chart-frame-wrap iframe {
+      flex: 1;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: white;
+      width: 100%;
+      min-height: 480px;
+    }
+
+    /* ── Scenario pane ── */
+    .scenario-toolbar {
+      padding: 0.75rem 1.5rem;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 0.9rem;
+      flex-shrink: 0;
+      flex-wrap: wrap;
+    }
+    .scenario-toolbar label {
+      font-size: 12.5px;
+      font-weight: 500;
+      color: var(--text-muted);
+      white-space: nowrap;
+    }
+    .scenario-select {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      color: var(--text);
+      background: var(--surface);
+      border: 1px solid var(--border-strong);
+      border-radius: 7px;
+      padding: 5px 10px;
+      cursor: pointer;
+      min-width: 220px;
+    }
+    .scenario-select:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+    .stype-tabs {
+      display: flex;
+      gap: 3px;
+      margin-left: auto;
+    }
+    .stype-btn {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 12px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      padding: 5px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.12s;
+    }
+    .stype-btn:hover { border-color: var(--border-strong); color: var(--text); }
+    .stype-btn.active {
+      background: var(--accent-light);
+      border-color: var(--accent);
+      color: var(--accent);
+      font-weight: 500;
+    }
+    .sankey-grid {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      padding: 1rem 1.5rem 1.25rem;
+      overflow: hidden;
+    }
+    .sankey-grid.single-col { grid-template-columns: 1fr; }
+    .sankey-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .sankey-card-header {
+      padding: 0.5rem 0.9rem;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface2);
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+    .sankey-card-header .dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .dot-energy { background: var(--accent); }
+    .dot-carbon { background: var(--accent2); }
+    .sankey-card-header span {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-muted);
+    }
+    .sankey-card iframe {
+      flex: 1;
+      border: none;
+      width: 100%;
+      min-height: 420px;
+    }
+    .sankey-placeholder {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 8px;
+      color: var(--text-faint);
+      font-size: 13px;
+      background: var(--bg);
+    }
+
+    /* ── Sensitivity pane ── */
+    .sensitivity-toolbar {
+      padding: 0.85rem 1.5rem;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 1.25rem;
+      flex-shrink: 0;
+      flex-wrap: wrap;
+    }
+    .sensitivity-toolbar label {
+      font-size: 12.5px;
+      font-weight: 500;
+      color: var(--text-muted);
+      white-space: nowrap;
+    }
+    .cc-slider-wrap {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      flex: 1;
+      max-width: 480px;
+    }
+    .cc-slider {
+      -webkit-appearance: none;
+      appearance: none;
+      flex: 1;
+      height: 5px;
+      border-radius: 3px;
+      background: var(--border);
+      outline: none;
+      cursor: pointer;
+    }
+    .cc-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: var(--accent);
+      cursor: pointer;
+      border: 2px solid white;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+    }
+    .cc-slider::-moz-range-thumb {
+      width: 16px; height: 16px;
+      border-radius: 50%;
+      background: var(--accent);
+      cursor: pointer;
+      border: 2px solid white;
+    }
+    .cc-value-badge {
+      font-family: var(--mono);
+      font-size: 13px;
+      font-weight: 500;
+      background: var(--accent-light);
+      color: var(--accent);
+      padding: 3px 10px;
+      border-radius: 6px;
+      border: 1px solid rgba(36,85,164,0.2);
+      white-space: nowrap;
+      min-width: 110px;
+      text-align: center;
+    }
+    .sens-level-select {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 12.5px;
+      color: var(--text);
+      background: var(--surface);
+      border: 1px solid var(--border-strong);
+      border-radius: 7px;
+      padding: 5px 10px;
+      cursor: pointer;
+    }
+    .sensitivity-note {
+      font-size: 12px;
+      color: var(--text-faint);
+      padding: 0.6rem 1.5rem;
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+      font-style: italic;
+    }
+    .sens-sankey-grid {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      padding: 1rem 1.5rem 1.25rem;
+      overflow: hidden;
+    }
+
+    /* ── About pane ── */
+    .about-pane-wrapper {
+      display: flex;
+      flex: 1;
+      overflow: hidden;
+    }
+    #sidebar-about a.nav-item {
+      text-decoration: none;
+      color: var(--text-muted);
+    }
+    #sidebar-about a.nav-item:hover { color: var(--text); }
+    #sidebar-about a.nav-item.active { color: var(--accent); }
+    .about-content h2, .about-content h3 {
+      scroll-margin-top: 1.5rem;
+    }
+    .about-sidebar {
+      width: 220px;
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      overflow-y: auto;
+      flex-shrink: 0;
+      padding: 0.75rem 0;
+    }
+    .about-content-wrapper {
+      flex: 1;
+      overflow-y: auto;
+    }
+    .about-content {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem 3rem;
+    }
+    .about-content h2 {
+      font-family: 'Source Serif 4', serif;
+      font-size: 22px;
+      font-weight: 600;
+      margin-bottom: 0.6rem;
+      color: var(--text);
+    }
+    .about-content h3 {
+      font-family: 'Source Serif 4', serif;
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text);
+      margin-top: 2rem;
+      margin-bottom: 0.5rem;
+      padding-bottom: 0.35rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .about-content p {
+      font-size: 13.5px;
+      line-height: 1.75;
+      color: var(--text-muted);
+      margin-bottom: 0.85rem;
+    }
+    .about-content a { color: var(--accent); }
+    .about-content code {
+      font-family: var(--mono);
+      font-size: 12px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      padding: 1px 5px;
+      border-radius: 4px;
+      color: var(--accent);
+    }
+
+    /* Levels table */
+    .levels-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12.5px;
+      margin-top: 1rem;
+    }
+    .levels-table th {
+      text-align: left;
+      padding: 8px 12px;
+      background: var(--accent);
+      color: white;
+      font-weight: 500;
+      border: 1px solid var(--accent);
+    }
+    .levels-table th:first-child { border-radius: 0; }
+    .levels-table td {
+      padding: 7px 12px;
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      vertical-align: top;
+      line-height: 1.5;
+    }
+    .levels-table tr:nth-child(even) td { background: var(--surface2); }
+    .check { color: var(--accent3); font-weight: 700; }
+    .cross { color: var(--text-faint); }
+    .level-id {
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 500;
+      background: var(--accent-light);
+      color: var(--accent);
+      padding: 2px 7px;
+      border-radius: 4px;
+      display: inline-block;
+    }
+
+    /* Env categories table */
+    .env-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12.5px;
+      margin-top: 1rem;
+    }
+    .env-table th {
+      text-align: left;
+      padding: 7px 12px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      font-weight: 500;
+      color: var(--text);
+    }
+    .env-table td {
+      padding: 7px 12px;
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+    .env-table tr:nth-child(even) td { background: var(--surface2); }
+    .cat-badge {
+      font-family: var(--mono);
+      font-size: 10.5px;
+      padding: 2px 7px;
+      border-radius: 4px;
+      display: inline-block;
+      white-space: nowrap;
+    }
+    .cat-midpoint { background: #fff3cd; color: #7a5000; border: 1px solid #f0d070; }
+    .cat-endpoint { background: #d4edda; color: #155724; border: 1px solid #88c99a; }
+    .cat-remaining { background: #dde8fb; color: var(--accent); border: 1px solid #9ab5e4; }
+    .cat-territorial { background: #fde8d8; color: var(--accent2); border: 1px solid #f0b080; }
+
+    /* Paper citation box */
+    .citation-box {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--accent);
+      border-radius: 0 8px 8px 0;
+      padding: 0.85rem 1rem;
+      margin: 1.25rem 0;
+      font-size: 12.5px;
+      color: var(--text-muted);
+      line-height: 1.7;
+    }
+    .citation-box .cite-label {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.3rem;
+    }
+
+    /* Tool chips */
+    .tool-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 0.75rem;
+    }
+    .tool-chip {
+      font-family: var(--mono);
+      font-size: 11.5px;
+      padding: 4px 10px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text-muted);
+    }
+    .tool-chip a { color: inherit; text-decoration: none; }
+    .tool-chip:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* Placeholder iframe */
+    .placeholder-frame {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 0.75rem;
+      background: var(--bg);
+      border-radius: var(--radius);
+      border: 1px dashed var(--border-strong);
+      min-height: 400px;
+      color: var(--text-faint);
+      font-size: 13px;
+      padding: 2rem;
+      text-align: center;
+    }
+    .placeholder-frame svg { opacity: 0.3; width: 40px; height: 40px; margin-bottom: 0.5rem; }
+    .placeholder-frame strong { font-weight: 500; color: var(--text-muted); display: block; margin-bottom: 0.25rem; }
+    .placeholder-frame code { font-family: var(--mono); font-size: 11px; color: var(--text-faint); word-break: break-all; }
+  </style>
+</head>
+<body>
+
+<!-- ── Header ── -->
+<header>
+  <div class="logo-mark">ES</div>
+  <h1><strong>EnergyScope-LCA</strong></h1>
+  <div class="header-divider"></div>
+  <span class="header-pill">Québec · 2023 – 2050</span>
+  <div class="tab-group">
+    <button class="tab-btn active" onclick="switchTab('comparative', this)">Comparative view</button>
+    <button class="tab-btn" onclick="switchTab('per-level', this)">Per-level view</button>
+    <button class="tab-btn" onclick="switchTab('sensitivity', this)">Sensitivity analysis</button>
+    <button class="tab-btn" onclick="switchTab('about', this)">About</button>
+  </div>
+</header>
+
+<div class="app-body">
+
+  <!-- ══════════════════════════════════════════
+       SIDEBAR — Comparative
+  ══════════════════════════════════════════ -->
+  <aside id="sidebar-comparative">
+
+    <div class="section-label">Energy system configurations</div>
+
+    <div class="nav-item active"
+         data-src="Results/annual_prod_electricity.html"
+         data-src-alt="Results/f_mult_electricity.html"
+         data-has-unit="true"
+         data-unit-a="TWh/yr" data-unit-b="GW"
+         data-title="Electricity production"
+         data-desc="Electricity generation technologies across prospective-regionalization levels"
+         onclick="loadChart(this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="13 2 13 9 20 9"/><path d="M9 22H5a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h10l7 7v5"/><path d="m17 17 2 2 4-4"/></svg>
+      Electricity
+    </div>
+
+    <div class="nav-item"
+         data-src="Results/annual_prod_heat.html"
+         data-src-alt=""
+         data-has-unit="false"
+         data-title="Heat production"
+         data-desc="Industrial and domestic heat production technologies"
+         onclick="loadChart(this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2z"/><path d="M12 6v6l4 2"/></svg>
+      Heat
+    </div>
+
+    <div class="nav-item"
+         data-src="Results/annual_prod_passenger_mobility.html"
+         data-src-alt=""
+         data-has-unit="false"
+         data-title="Passenger mobility"
+         data-desc="Passenger transport technologies (Gpkm/year)"
+         onclick="loadChart(this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+      Passenger mobility
+    </div>
+
+    <div class="nav-item"
+         data-src="Results/annual_prod_freight_mobility.html"
+         data-src-alt=""
+         data-has-unit="false"
+         data-title="Freight mobility"
+         data-desc="Freight transport technologies (Gtkm/year)"
+         onclick="loadChart(this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M1 3h15v13H1z"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+      Freight mobility
+    </div>
+
+    <div class="nav-item"
+         data-src="Results/annual_prod_other.html"
+         data-src-alt=""
+         data-has-unit="false"
+         data-title="Alternative fuels production"
+         data-desc="Hydrogen, biofuels, and synthetic fuels production (TWh/year)"
+         onclick="loadChart(this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2a10 10 0 0 1 10 10c0 5.52-4.48 10-10 10S2 17.52 2 12 6.48 2 12 2"/><path d="M12 8v4l3 3"/></svg>
+      Alternative fuels
+    </div>
+
+    <div class="nav-item"
+         data-src="Results/annual_res.html"
+         data-src-alt=""
+         data-has-unit="false"
+         data-title="Energy resources"
+         data-desc="Primary energy resources and imports (TWh/year)"
+         onclick="loadChart(this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
+      Energy resources
+    </div>
+
+    <div class="nav-item"
+         data-src="Results/annual_prod_carbon_capture.html"
+         data-src-alt=""
+         data-has-unit="false"
+         data-title="Carbon capture"
+         data-desc="Post-combustion carbon capture deployment (Mt CO₂/year)"
+         onclick="loadChart(this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 12l2 2 4-4"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
+      Carbon capture
+    </div>
+
+    <div class="nav-item"
+         data-src="Results/annual_prod_carbon_storage_and_utilization.html"
+         data-src-alt=""
+         data-has-unit="false"
+         data-title="Carbon sequestration &amp; utilization"
+         data-desc="Carbon storage and utilization pathways (Mt CO₂/year)"
+         onclick="loadChart(this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="6 9 12 15 18 9"/></svg>
+      Carbon sequestration
+    </div>
+
+    <div class="nav-group-sep"></div>
+    <div class="section-label">Environmental impacts</div>
+
+    <div class="nav-item"
+         data-src-sector="Results/regionalization_levels_Sector_contrib_total_human_health_2050.html"
+         data-src-tech="Results/regionalization_levels_index_contrib_total_human_health_2050.html"
+         data-has-unit="false"
+         data-is-impact="true"
+         data-title="Total human health"
+         data-desc-sector="Total human health damage by energy sector (DALY/(cap.yr))"
+         data-desc-tech="Total human health damage by technology and resource (DALY/(cap.yr))"
+         onclick="loadChart(this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+      Total human health
+    </div>
+
+    <div class="nav-item"
+         data-src-sector="Results/regionalization_levels_Sector_contrib_total_ecosystem_quality_2050.html"
+         data-src-tech="Results/regionalization_levels_index_contrib_total_ecosystem_quality_2050.html"
+         data-has-unit="false"
+         data-is-impact="true"
+         data-title="Total ecosystem quality"
+         data-desc-sector="Total ecosystem quality damage by energy sector (PDF.m².yr/(cap.yr))"
+         data-desc-tech="Total ecosystem quality damage by technology and resource (PDF.m².yr/(cap.yr))"
+         onclick="loadChart(this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 22V12m0 0C12 7 7 5 2 2c5 3 8 7 10 10m0 0c0-5 5-7 10-10-5 3-8 7-10 10"/></svg>
+      Total ecosystem quality
+    </div>
+
+    <div class="nav-item"
+         data-src-sector="Results/regionalization_levels_Sector_contrib_remaining_human_health_2050.html"
+         data-src-tech="Results/regionalization_levels_index_contrib_remaining_human_health_2050.html"
+         data-has-unit="false"
+         data-is-impact="true"
+         data-title="Remaining human health"
+         data-desc-sector="Remaining human health damage by energy sector (DALY/(cap.yr))"
+         data-desc-tech="Remaining human health damage by technology and resource (DALY/(cap.yr))"
+         onclick="loadChart(this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      Remaining human health
+    </div>
+
+    <div class="nav-item"
+         data-src-sector="Results/regionalization_levels_Sector_contrib_remaining_ecosystem_quality_2050.html"
+         data-src-tech="Results/regionalization_levels_index_contrib_remaining_ecosystem_quality_2050.html"
+         data-has-unit="false"
+         data-is-impact="true"
+         data-title="Remaining ecosystem quality"
+         data-desc-sector="Remaining ecosystem quality damage by energy sector (PDF.m².yr/(cap.yr))"
+         data-desc-tech="Remaining ecosystem quality damage by technology and resource (PDF.m².yr/(cap.yr))"
+         onclick="loadChart(this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      Remaining ecosystem quality
+    </div>
+
+    <div class="nav-item"
+         data-src-sector="Results/regionalization_levels_Sector_contrib_climate_change_short_term_2050.html"
+         data-src-tech="Results/regionalization_levels_index_contrib_climate_change_short_term_2050.html"
+         data-has-unit="false"
+         data-is-impact="true"
+         data-title="Climate change"
+         data-desc-sector="Total climate change impact by energy sector (t CO₂-eq/(cap.yr))"
+         data-desc-tech="Total climate change contributions by technology and resource (t CO₂-eq/(cap.yr))"
+         onclick="loadChart(this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M17 18a5 5 0 0 0-10 0"/><line x1="12" y1="2" x2="12" y2="9"/><line x1="4.22" y1="10.22" x2="5.64" y2="11.64"/><line x1="1" y1="18" x2="3" y2="18"/><line x1="21" y1="18" x2="23" y2="18"/><line x1="18.36" y1="11.64" x2="19.78" y2="10.22"/><line x1="23" y1="22" x2="1" y2="22"/><polyline points="16 5 12 9 8 5"/></svg>
+      Climate change
+    </div>
+
+    <div class="nav-item"
+         data-src-sector="Results/regionalization_levels_Sector_contrib_climate_change_short_term_territorial_2050.html"
+         data-src-tech="Results/regionalization_levels_index_contrib_climate_change_short_term_territorial_2050.html"
+         data-has-unit="false"
+         data-is-impact="true"
+         data-title="Climate change — territorial"
+         data-desc-sector="Territorial GHG emissions by energy sector (t CO₂-eq/(cap.yr))"
+         data-desc-tech="Territorial GHG emissions by technology and resource (t CO₂-eq/(cap.yr))"
+         onclick="loadChart(this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      Climate change — territorial
+    </div>
+
+    <div class="nav-item"
+         data-src-sector="Results/regionalization_levels_Sector_contrib_climate_change_short_term_abroad_2050.html"
+         data-src-tech="Results/regionalization_levels_index_contrib_climate_change_short_term_abroad_2050.html"
+         data-has-unit="false"
+         data-is-impact="true"
+         data-title="Climate change — abroad"
+         data-desc-sector="Abroad GHG emissions by energy sector (t CO₂-eq/(cap.yr))"
+         data-desc-tech="Abroad GHG emissions by technology and resource (t CO₂-eq/(cap.yr))"
+         onclick="loadChart(this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      Climate change — abroad
+    </div>
+
+  </aside>
+
+  <!-- ══════════════════════════════════════════
+       MAIN CONTENT
+  ══════════════════════════════════════════ -->
+  <main>
+
+    <!-- ── Pane: Comparative ── -->
+    <div class="pane active" id="pane-comparative">
+      <div class="chart-header" id="comparative-header">
+        <div class="chart-header-left">
+          <h2 id="chart-title">Electricity production</h2>
+          <p id="chart-desc">Electricity generation technologies across prospective-regionalization levels</p>
+        </div>
+        <div style="display:flex;gap:0.5rem;align-items:center;">
+          <div class="unit-toggle" id="unit-toggle" style="display:none;">
+            <button class="unit-btn active" onclick="switchUnit('a', this)">TWh/yr</button>
+            <button class="unit-btn" onclick="switchUnit('b', this)">GW</button>
+          </div>
+          <div class="unit-toggle" id="contrib-toggle" style="display:none;">
+            <button class="unit-btn active" onclick="switchContrib('sector', this)">By sector</button>
+            <button class="unit-btn" onclick="switchContrib('tech', this)">By technology</button>
+          </div>
+        </div>
+      </div>
+      <div class="chart-frame-wrap">
+        <div class="placeholder-frame" id="chart-placeholder">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+          <strong>Electricity production chart</strong>
+          <code>Results/annual_prod_electricity.html</code>
+        </div>
+        <iframe id="chart-iframe" src="" frameborder="0" style="display:none;"></iframe>
+      </div>
+    </div>
+
+    <!-- ── Pane: Per-level ── -->
+    <div class="pane" id="pane-per-level">
+      <div class="scenario-toolbar">
+        <label for="level-select">Prospective-regionalization level:</label>
+        <select class="scenario-select" id="level-select" onchange="updateSankeys()">
+          <optgroup label="── 2023 reference ──">
+            <option value="2023">2023 — Reference energy system</option>
+          </optgroup>
+          <optgroup label="── 2050 · SSP5-H (conservative) ──">
+            <option value="SSP5-H_base_wo_iam">SSP5-H · Def. (no IAM, no spatialization)</option>
+            <option value="SSP5-H_base">SSP5-H · IAM</option>
+            <option value="SSP5-H_spat">SSP5-H · IAM + Spat.</option>
+            <option value="SSP5-H_spat_fore">SSP5-H · IAM + Spat. + Fore.</option>
+            <option value="SSP5-H_spat_back">SSP5-H · IAM + Spat. + Back.</option>
+            <option value="SSP5-H_spat_fore_back">SSP5-H · IAM + Spat. + Fore. + Back.</option>
+          </optgroup>
+          <optgroup label="── 2050 · SSP2-L (optimistic) ──">
+            <option value="SSP2-L_base">SSP2-L · IAM</option>
+            <option value="SSP2-L_spat">SSP2-L · IAM + Spat.</option>
+            <option value="SSP2-L_spat_fore">SSP2-L · IAM + Spat. + Fore.</option>
+            <option value="SSP2-L_spat_back">SSP2-L · IAM + Spat. + Back.</option>
+            <option value="SSP2-L_spat_fore_back">SSP2-L · IAM + Spat. + Fore. + Back.</option>
+          </optgroup>
+        </select>
+        <div class="stype-tabs">
+          <button class="stype-btn active" onclick="switchSankeyType('energy', this)">Energy flows</button>
+          <button class="stype-btn" onclick="switchSankeyType('carbon', this)">Carbon flows</button>
+          <button class="stype-btn" onclick="switchSankeyType('both', this)">Both</button>
+        </div>
+      </div>
+      <div class="sankey-grid" id="sankey-grid">
+        <div class="sankey-card" id="card-energy">
+          <div class="sankey-card-header">
+            <div class="dot dot-energy"></div>
+            <span id="energy-sankey-label">Energy flows</span>
+          </div>
+          <div class="placeholder-frame" id="energy-sankey-placeholder">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/><ellipse cx="12" cy="5" rx="9" ry="3"/></svg>
+            <strong>Energy Sankey</strong>
+            <code id="energy-sankey-path">Results/sankey_2023.html</code>
+          </div>
+          <iframe id="iframe-energy" src="" frameborder="0" style="display:none; height:100%; min-height:450px;"></iframe>
+        </div>
+        <div class="sankey-card" id="card-carbon" style="display:none;">
+          <div class="sankey-card-header">
+            <div class="dot dot-carbon"></div>
+            <span>Carbon flows</span>
+          </div>
+          <div class="placeholder-frame" id="carbon-sankey-placeholder">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+            <strong>Carbon Sankey</strong>
+            <code id="carbon-sankey-path">Results/sankey_carbon_2023.html</code>
+          </div>
+          <iframe id="iframe-carbon" src="" frameborder="0" style="display:none; height:100%; min-height:450px;"></iframe>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Pane: Sensitivity ── -->
+    <div class="pane" id="pane-sensitivity">
+      <div class="sensitivity-toolbar">
+        <label>Carbon capture availability:</label>
+        <div class="cc-slider-wrap">
+          <span style="font-family:var(--mono);font-size:11px;color:var(--text-faint);">5</span>
+          <input type="range" class="cc-slider" id="cc-slider" min="5" max="35" value="35" step="1" oninput="updateSensitivity()">
+          <span style="font-family:var(--mono);font-size:11px;color:var(--text-faint);">35</span>
+          <span class="cc-value-badge" id="cc-value-badge">35 Mt CO₂/yr</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:0.5rem;">
+          <label>Level:</label>
+          <select class="sens-level-select" id="sens-level-select" onchange="updateSensitivity()">
+            <option value="base_wo_iam">Def.</option>
+            <option value="base">IAM</option>
+            <option value="spat">IAM + Spat.</option>
+            <option value="spat_fore">IAM + Spat. + Fore.</option>
+            <option value="spat_back">IAM + Spat. + Back.</option>
+            <option value="spat_fore_back" selected>IAM + Spat. + Fore. + Back.</option>
+          </select>
+        </div>
+        <div style="display:flex;align-items:center;gap:0.5rem;">
+          <label>SSP:</label>
+          <select class="sens-level-select" id="sens-ssp-select" onchange="updateSensitivity()">
+            <option value="SSP5-H">SSP5-H</option>
+            <option value="SSP2-L">SSP2-L</option>
+          </select>
+        </div>
+      </div>
+      <div class="sensitivity-note">
+        Showing energy system configuration at the selected carbon capture availability. The vertical dashed lines in the paper's Figure 8 correspond to all configurations reaching ≤10 TWh of natural gas imports (yellow) and zero imports (green).
+      </div>
+      <div class="sens-sankey-grid">
+        <div class="sankey-card">
+          <div class="sankey-card-header">
+            <div class="dot dot-energy"></div>
+            <span>Energy flows</span>
+          </div>
+          <div class="placeholder-frame" id="sens-energy-placeholder" style="flex:1;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/><ellipse cx="12" cy="5" rx="9" ry="3"/></svg>
+            <strong>Sensitivity — Energy Sankey</strong>
+            <code id="sens-energy-path">Results/sensitivity/sankey_energy_iam_spat_fore_back_ssp5h_35.html</code>
+          </div>
+          <iframe id="sens-iframe-energy" src="" frameborder="0" style="display:none; flex:1; min-height:420px;"></iframe>
+        </div>
+        <div class="sankey-card">
+          <div class="sankey-card-header">
+            <div class="dot dot-carbon"></div>
+            <span>Carbon flows</span>
+          </div>
+          <div class="placeholder-frame" id="sens-carbon-placeholder" style="flex:1;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+            <strong>Sensitivity — Carbon Sankey</strong>
+            <code id="sens-carbon-path">Results/sensitivity/sankey_carbon_iam_spat_fore_back_ssp5h_35.html</code>
+          </div>
+          <iframe id="sens-iframe-carbon" src="" frameborder="0" style="display:none; flex:1; min-height:420px;"></iframe>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Pane: About ── -->
+    <div class="pane" id="pane-about">
+      <div class="about-pane-wrapper">
+        <aside class="about-sidebar" id="sidebar-about">
+          <div class="section-label">Contents</div>
+          <a class="nav-item" href="#about-paper">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+            Paper & context
+          </a>
+          <a class="nav-item" href="#about-levels">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+            Modeling levels
+          </a>
+          <a class="nav-item" href="#about-env">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            Environmental categories
+          </a>
+          <a class="nav-item" href="#about-tools">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+            Tools & methods
+          </a>
+          <a class="nav-item" href="#about-app">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg>
+            Using this app
+          </a>
+        </aside>
+        <div class="about-content-wrapper">
+          <div class="about-content">
+
+            <h2 id="about-paper">Regionalized and prospective LCA in energy system optimization</h2>
+            <p>
+              This dashboard presents results from the paper <em>"Regionalized and prospective life-cycle assessment in energy system optimization: effects on environmental profiling and energy planning for net-zero without burden shifting"</em>, submitted to <em>Renewable and Sustainable Energy Reviews</em>.
+            </p>
+
+            <div class="citation-box">
+              <div class="cite-label">Paper</div>
+              Souttre M., Chuat A., Schnidrig J., Fischer L., Maj J., Majeau-Bettez G., Maréchal F., Margni M. (2026).
+              Regionalized and prospective life-cycle assessment in energy system optimization: effects on environmental profiling and energy planning for net-zero without burden shifting.
+              <em>Renewable and Sustainable Energy Reviews</em>.
+            </div>
+
+            <p>
+              The study applies a novel framework to endogenously integrate prospective and regionalized LCA impact scores into an energy system model (ESM) — specifically EnergyScope — adapted to the province of Québec. The central research question is: <strong>how does the integration of prospective scenarios and regionalization in LCA affect energy system environmental profiling and energy planning decision-making?</strong>
+            </p>
+            <p>
+              The case study targets a territorial net-zero emissions energy system for Québec by 2050, without burden-shifting to other environmental impact categories or outsourcing emissions abroad. Results are obtained for two contrasting background IAM scenarios (SSP5-H and SSP2-L) combined with five levels of LCA regionalization.
+            </p>
+
+            <h3 id="about-levels">Prospective-regionalization modeling levels</h3>
+            <p>
+              Results are produced for the following combinations of prospective and regionalization assumptions. The <strong>Def.</strong> level is the 2050 reference without IAM projections or spatial differentiation; all other levels include IAM background projections from the IMAGE model.
+            </p>
+
+            <table class="levels-table">
+              <thead>
+                <tr>
+                  <th>Label</th>
+                  <th>IAM background</th>
+                  <th>Spatialization</th>
+                  <th>Foreground reg.</th>
+                  <th>Background reg.</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><span class="level-id">Def.</span></td>
+                  <td><span class="cross">—</span></td>
+                  <td><span class="cross">—</span></td>
+                  <td><span class="cross">—</span></td>
+                  <td><span class="cross">—</span></td>
+                  <td>Default ecoinvent database, no prospective adjustments, no spatial differentiation.</td>
+                </tr>
+                <tr>
+                  <td><span class="level-id">IAM</span></td>
+                  <td><span class="check">✓</span></td>
+                  <td><span class="cross">—</span></td>
+                  <td><span class="cross">—</span></td>
+                  <td><span class="cross">—</span></td>
+                  <td>Background inventory updated with IMAGE SSP projections via <code>premise</code>. No spatial differentiation.</td>
+                </tr>
+                <tr>
+                  <td><span class="level-id">IAM + Spat.</span></td>
+                  <td><span class="check">✓</span></td>
+                  <td><span class="check">✓</span></td>
+                  <td><span class="cross">—</span></td>
+                  <td><span class="cross">—</span></td>
+                  <td>Elementary flows spatialized to their emission location; regionalized characterization factors applied (IMPACT World+).</td>
+                </tr>
+                <tr>
+                  <td><span class="level-id">IAM + Spat. + Fore.</span></td>
+                  <td><span class="check">✓</span></td>
+                  <td><span class="check">✓</span></td>
+                  <td><span class="check">✓</span></td>
+                  <td><span class="cross">—</span></td>
+                  <td>First-tier flows of operation and resource LCI datasets relocated to Québec using the foreground regionalization module of <code>mescal</code>.</td>
+                </tr>
+                <tr>
+                  <td><span class="level-id">IAM + Spat. + Back.</span></td>
+                  <td><span class="check">✓</span></td>
+                  <td><span class="check">✓</span></td>
+                  <td><span class="cross">—</span></td>
+                  <td><span class="check">✓</span></td>
+                  <td>National production and consumption markets added via <code>regioinvent</code> (~134 000 additional datasets based on BACI trade data).</td>
+                </tr>
+                <tr>
+                  <td><span class="level-id">IAM + Spat. + Fore. + Back.</span></td>
+                  <td><span class="check">✓</span></td>
+                  <td><span class="check">✓</span></td>
+                  <td><span class="check">✓</span></td>
+                  <td><span class="check">✓</span></td>
+                  <td>Most comprehensive level: full spatialization, foreground and background regionalization, and IAM prospective assumptions.</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <p style="margin-top:0.75rem; font-size:12px; color:var(--text-faint);">
+              Each level is run under two SSP-RCP scenarios: <strong>SSP5-H</strong> (~+3.4°C by 2100, conservative background, chosen following the precautionary principle) and <strong>SSP2-L</strong> (~+1.6°C by 2100, strong global mitigation). IAM: IMAGE model. Spat.: spatialization of elementary flows and impact regionalization. Fore.: foreground inventory regionalization. Back.: background inventory regionalization.
+            </p>
+
+            <h3 id="about-env">Environmental impact categories</h3>
+            <p>
+              LCA scores are calculated using the regionalized version of <strong>IMPACT World+</strong> (v2.1). Results are reported for the following categories across the comparative and per-level views:
+            </p>
+            <table class="env-table">
+              <thead>
+                <tr>
+                  <th>Category</th>
+                  <th>Type</th>
+                  <th>Unit</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Total human health</strong></td>
+                  <td><span class="cat-badge cat-endpoint">Endpoint</span></td>
+                  <td>DALY/(cap.yr)</td>
+                  <td>Sum of all endpoint categories contributing to human health damage, including climate change.</td>
+                </tr>
+                <tr>
+                  <td><strong>Total ecosystem quality</strong></td>
+                  <td><span class="cat-badge cat-endpoint">Endpoint</span></td>
+                  <td>PDF.m².yr/(cap.yr)</td>
+                  <td>Sum of all endpoint categories contributing to ecosystem quality damage, including climate change.</td>
+                </tr>
+                <tr>
+                  <td><strong>Climate change (total)</strong></td>
+                  <td><span class="cat-badge cat-midpoint">Midpoint</span></td>
+                  <td>t CO₂-eq/(cap.yr)</td>
+                  <td>Short-term climate change impact (GWP100). Uses −1/+1 biogenic carbon accounting for CDR technologies.</td>
+                </tr>
+                <tr>
+                  <td><strong>Remaining human health</strong></td>
+                  <td><span class="cat-badge cat-remaining">Remaining</span></td>
+                  <td>DALY/(cap.yr)</td>
+                  <td>Human health damage excluding short-term and long-term climate change categories. Used as constraint to prevent burden shifting.</td>
+                </tr>
+                <tr>
+                  <td><strong>Remaining ecosystem quality</strong></td>
+                  <td><span class="cat-badge cat-remaining">Remaining</span></td>
+                  <td>PDF.m².yr/(cap.yr)</td>
+                  <td>Ecosystem quality damage excluding short-term and long-term climate change categories. Used as constraint to prevent burden shifting.</td>
+                </tr>
+                <tr>
+                  <td><strong>Climate change — territorial</strong></td>
+                  <td><span class="cat-badge cat-territorial">Territorial</span></td>
+                  <td>t CO₂-eq/(cap.yr)</td>
+                  <td>Life-cycle GHG impacts from emissions occurring within Québec. Constrained to zero (net-zero target).</td>
+                </tr>
+                <tr>
+                  <td><strong>Climate change — abroad</strong></td>
+                  <td><span class="cat-badge cat-territorial">Abroad</span></td>
+                  <td>t CO₂-eq/(cap.yr)</td>
+                  <td>Life-cycle GHG impacts from emissions occurring outside Québec (supply chain). Constrained to ≤ 2023 equivalent.</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <h3 id="about-tools">Tools and methods</h3>
+            <p>The workflow combines three open-source Python tools with the EnergyScope optimization model:</p>
+            <div class="tool-chips">
+              <span class="tool-chip"><a href="https://mescal.readthedocs.io" target="_blank">mescal</a></span>
+              <span class="tool-chip"><a href="https://github.com/polca/premise" target="_blank">premise</a></span>
+              <span class="tool-chip"><a href="https://github.com/CIRAIG/regioinvent" target="_blank">regioinvent</a></span>
+              <span class="tool-chip"><a href="https://github.com/matthieu-str/regiopremise" target="_blank">regiopremise</a></span>
+              <span class="tool-chip"><a href="https://github.com/CIRAIG/EnergyScope-Quebec" target="_blank">EnergyScope-Québec</a></span>
+              <span class="tool-chip"><a href="https://support.ecoinvent.org/ecoinvent-version-3.10.1" target="_blank">ecoinvent 3.10.1 (cut-off)</a></span>
+              <span class="tool-chip"><a href="https://zenodo.org/records/14041258" target="_blank">IMPACT World+ v2.1</a></span>
+              <span class="tool-chip">IMAGE (IAM) · SSP5-H / SSP2-L</span>
+            </div>
+            <p style="margin-top:0.85rem;">
+              <code>mescal</code> handles systematic harmonization between EnergyScope and LCI datasets: double-counting removal, parameter alignment, foreground regionalization, and LCIA score normalization. <code>premise</code> generates prospective ecoinvent databases from IAM outputs. <code>regioinvent</code> adds ~134 000 regionalized market datasets based on BACI international trade data. <code>regiopremise</code> ensures compatibility between these two tools.
+            </p>
+
+            <h3 id="about-app">Using this application</h3>
+            <p>This application has three main views:</p>
+            <p>
+              <strong>Comparative view</strong> — Browse energy system configurations and environmental impact profiles across all prospective-regionalization levels simultaneously. Use the sidebar to select a chart category. For electricity, a unit toggle (TWh/yr ↔ GW) is available.
+            </p>
+            <p>
+              <strong>Per-level view</strong> — Inspect the energy and carbon flow Sankey diagrams for a specific prospective-regionalization level and SSP scenario. Use the dropdown to select a configuration and the tabs to toggle between flow types.
+            </p>
+            <p>
+              <strong>Sensitivity analysis</strong> — Explore how the energy system configuration changes as a function of industrial carbon capture availability (5–35 Mt CO₂/yr). Select the modeling level and SSP scenario; the slider controls the carbon capture value for which the Sankey diagrams are shown.
+            </p>
+            <p style="font-size:12px;color:var(--text-faint);margin-top:1.5rem;">
+              All chart files are expected in a <code>Results/</code> subdirectory relative to this HTML file, and sensitivity Sankeys in <code>Results/sensitivity/</code>. File naming conventions follow the pattern shown in each placeholder frame. Charts are generated with Plotly from the EnergyScope-LCA Python post-processing pipeline.
+            </p>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script>
+  // ── Tab switching ──
+  let currentTab = 'comparative';
+  function switchTab(tab, btn) {
+    currentTab = tab;
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    if (btn) btn.classList.add('active');
+
+    // Show/hide sidebars
+    const sidebarComp = document.getElementById('sidebar-comparative');
+    const sidebarAbout = document.getElementById('sidebar-about');
+
+    sidebarComp.style.display = (tab === 'comparative') ? '' : 'none';
+    sidebarAbout.style.display = (tab === 'about') ? '' : 'none';
+
+    // Show/hide panes
+    document.querySelectorAll('.pane').forEach(p => p.classList.remove('active'));
+    const paneMap = {
+      'comparative': 'pane-comparative',
+      'per-level': 'pane-per-level',
+      'sensitivity': 'pane-sensitivity',
+      'about': 'pane-about'
+    };
+    const pane = document.getElementById(paneMap[tab]);
+    if (pane) pane.classList.add('active');
+  }
+
+  // Hide about sidebar initially
+  document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('sidebar-about').style.display = 'none';
+  });
+
+  // ── Comparative chart loading ──
+  let currentUnitMode = 'a';
+  let currentContribMode = 'sector'; // 'sector' or 'tech'
+  let currentNavItem = null;
+
+  function loadChart(el) {
+    // Update nav active state
+    document.querySelectorAll('#sidebar-comparative .nav-item').forEach(n => n.classList.remove('active'));
+    el.classList.add('active');
+    currentNavItem = el;
+
+    const isImpact = el.getAttribute('data-is-impact') === 'true';
+    const hasUnit  = el.getAttribute('data-has-unit') === 'true';
+    const srcAlt   = el.getAttribute('data-src-alt') || '';
+    const title    = el.getAttribute('data-title') || '';
+    const unitA    = el.getAttribute('data-unit-a') || 'Unit A';
+    const unitB    = el.getAttribute('data-unit-b') || 'Unit B';
+
+    document.getElementById('chart-title').textContent = title;
+
+    // Unit toggle (energy configs only)
+    const unitToggle = document.getElementById('unit-toggle');
+    if (hasUnit && srcAlt) {
+      unitToggle.style.display = '';
+      unitToggle.children[0].textContent = unitA;
+      unitToggle.children[1].textContent = unitB;
+      currentUnitMode = 'a';
+      unitToggle.querySelectorAll('.unit-btn').forEach((b, i) => b.classList.toggle('active', i === 0));
+    } else {
+      unitToggle.style.display = 'none';
+      currentUnitMode = 'a';
+    }
+
+    // Contribution toggle (impact charts only)
+    const contribToggle = document.getElementById('contrib-toggle');
+    if (isImpact) {
+      contribToggle.style.display = '';
+      // Keep current mode, just refresh active state
+      contribToggle.querySelectorAll('.unit-btn').forEach((b, i) => {
+        b.classList.toggle('active', (i === 0 && currentContribMode === 'sector') || (i === 1 && currentContribMode === 'tech'));
+      });
+    } else {
+      contribToggle.style.display = 'none';
+    }
+
+    // Resolve src and desc
+    const src = resolveCurrentSrc(el);
+    const desc = resolveCurrentDesc(el);
+    document.getElementById('chart-desc').textContent = desc;
+    setChartIframe(src);
+  }
+
+  function resolveCurrentSrc(el) {
+    if (!el) return '';
+    const isImpact = el.getAttribute('data-is-impact') === 'true';
+    if (isImpact) {
+      return currentContribMode === 'tech'
+        ? (el.getAttribute('data-src-tech') || '')
+        : (el.getAttribute('data-src-sector') || '');
+    }
+    const src    = el.getAttribute('data-src') || '';
+    const srcAlt = el.getAttribute('data-src-alt') || '';
+    return (currentUnitMode === 'b' && srcAlt) ? srcAlt : src;
+  }
+
+  function resolveCurrentDesc(el) {
+    if (!el) return '';
+    const isImpact = el.getAttribute('data-is-impact') === 'true';
+    if (isImpact) {
+      return currentContribMode === 'tech'
+        ? (el.getAttribute('data-desc-tech') || '')
+        : (el.getAttribute('data-desc-sector') || '');
+    }
+    return el.getAttribute('data-desc') || '';
+  }
+
+  function switchUnit(mode, btn) {
+    currentUnitMode = mode;
+    document.getElementById('unit-toggle').querySelectorAll('.unit-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    if (!currentNavItem) return;
+    setChartIframe(resolveCurrentSrc(currentNavItem));
+  }
+
+  function switchContrib(mode, btn) {
+    currentContribMode = mode;
+    document.getElementById('contrib-toggle').querySelectorAll('.unit-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    if (!currentNavItem) return;
+    document.getElementById('chart-desc').textContent = resolveCurrentDesc(currentNavItem);
+    setChartIframe(resolveCurrentSrc(currentNavItem));
+  }
+
+  function setChartIframe(src) {
+    const iframe = document.getElementById('chart-iframe');
+    const placeholder = document.getElementById('chart-placeholder');
+    if (src) {
+      iframe.src = src;
+      iframe.style.display = '';
+      placeholder.style.display = 'none';
+    } else {
+      iframe.style.display = 'none';
+      placeholder.style.display = '';
+    }
+  }
+
+  // Trigger first nav item on load
+  window.addEventListener('load', () => {
+    const first = document.querySelector('#sidebar-comparative .nav-item');
+    if (first) loadChart(first);
+    // Fix 2: also trigger sankey load for per-level pane initial state
+    updateSankeys();
+  });
+
+  // ── Per-level Sankey ──
+  let currentSankeyType = 'energy';
+
+  const LEVEL_PATHS = {
+    '2023':                 ['sankey_2023','sankey_carbon_2023'],
+    'SSP5-H_base_wo_iam':   ['sankey_SSP5-H_base_wo_iam','sankey_carbon_base_wo_iam-SSP5-H'],
+    'SSP5-H_base':          ['sankey_SSP5-H_base','sankey_carbon_base-SSP5-H'],
+    'SSP5-H_spat':          ['sankey_SSP5-H_spat','sankey_carbon_spat-SSP5-H'],
+    'SSP5-H_spat_fore':     ['sankey_SSP5-H_spat_fore','sankey_carbon_spat_fore-SSP5-H'],
+    'SSP5-H_spat_back':     ['sankey_SSP5-H_spat_back','sankey_carbon_spat_back-SSP5-H'],
+    'SSP5-H_spat_fore_back':['sankey_SSP5-H_spat_fore_back','sankey_carbon_spat_fore_back-SSP5-H'],
+    'SSP2-L_base':          ['sankey_SSP2-L_base','sankey_carbon_base-SSP2-L'],
+    'SSP2-L_spat':          ['sankey_SSP2-L_spat','sankey_carbon_spat-SSP2-L'],
+    'SSP2-L_spat_fore':     ['sankey_SSP2-L_spat_fore','sankey_carbon_spat_fore-SSP2-L'],
+    'SSP2-L_spat_back':     ['sankey_SSP2-L_spat_back','sankey_carbon_spat_back-SSP2-L'],
+    'SSP2-L_spat_fore_back':['sankey_SSP2-L_spat_fore_back','sankey_carbon_spat_fore_back-SSP2-L'],
+  };
+
+  function updateSankeys() {
+    const level = document.getElementById('level-select').value;
+    const paths = LEVEL_PATHS[level] || ['', ''];
+    const energySrc = paths[0] ? `Results/${paths[0]}.html` : '';
+    const carbonSrc = paths[1] ? `Results/${paths[1]}.html` : '';
+
+    // Update placeholders
+    document.getElementById('energy-sankey-path').textContent = energySrc || '(no file)';
+    document.getElementById('carbon-sankey-path').textContent = carbonSrc || '(no file)';
+
+    setSankeyIframe('energy', energySrc);
+    setSankeyIframe('carbon', carbonSrc);
+    applySankeyLayout();
+  }
+
+  function setSankeyIframe(type, src) {
+    const iframe = document.getElementById(`iframe-${type}`);
+    const placeholder = document.getElementById(`${type}-sankey-placeholder`);
+    if (src) {
+      iframe.src = src;
+      iframe.style.display = '';
+      placeholder.style.display = 'none';
+    } else {
+      iframe.style.display = 'none';
+      placeholder.style.display = '';
+    }
+  }
+
+  function switchSankeyType(type, btn) {
+    currentSankeyType = type;
+    document.querySelectorAll('.stype-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    applySankeyLayout();
+  }
+
+  function applySankeyLayout() {
+    const grid = document.getElementById('sankey-grid');
+    const cardE = document.getElementById('card-energy');
+    const cardC = document.getElementById('card-carbon');
+
+    if (currentSankeyType === 'energy') {
+      cardE.style.display = '';
+      cardC.style.display = 'none';
+      grid.classList.add('single-col');
+    } else if (currentSankeyType === 'carbon') {
+      cardE.style.display = 'none';
+      cardC.style.display = '';
+      grid.classList.add('single-col');
+    } else {
+      cardE.style.display = '';
+      cardC.style.display = '';
+      grid.classList.remove('single-col');
+    }
+  }
+
+  // ── Sensitivity ──
+  function updateSensitivity() {
+    const val = parseInt(document.getElementById('cc-slider').value);
+    document.getElementById('cc-value-badge').textContent = `${val} Mt CO\u2082/yr`;
+
+    const level = document.getElementById('sens-level-select').value;
+    const ssp   = document.getElementById('sens-ssp-select').value;
+
+    const energySrc = `Results/sensitivity/sankey_energy_${level}_${ssp}_${val}.html`;
+    const carbonSrc = `Results/sensitivity/sankey_carbon_${level}_${ssp}_${val}.html`;
+
+    document.getElementById('sens-energy-path').textContent = energySrc;
+    document.getElementById('sens-carbon-path').textContent = carbonSrc;
+
+    setSensIframe('energy', energySrc);
+    setSensIframe('carbon', carbonSrc);
+  }
+
+  function setSensIframe(type, src) {
+    const iframe = document.getElementById(`sens-iframe-${type}`);
+    const placeholder = document.getElementById(`sens-${type}-placeholder`);
+    if (src) {
+      iframe.src = src;
+      iframe.style.display = 'flex';
+      iframe.style.flex = '1';
+      placeholder.style.display = 'none';
+    } else {
+      iframe.style.display = 'none';
+      placeholder.style.display = '';
+    }
+  }
+
+  // ── About scroll ──
+  // ── About nav: highlight active section on scroll ──
+  (function() {
+    const sectionIds = ['about-paper', 'about-levels', 'about-env', 'about-tools', 'about-app'];
+    function updateActiveLink() {
+      const wrapper = document.querySelector('.about-content-wrapper');
+      if (!wrapper) return;
+      const wrapperTop = wrapper.getBoundingClientRect().top;
+      let activeId = sectionIds[0];
+      for (const id of sectionIds) {
+        const el = document.getElementById(id);
+        if (!el) continue;
+        const elTop = el.getBoundingClientRect().top - wrapperTop;
+        if (elTop <= 40) activeId = id;
+      }
+      document.querySelectorAll('#sidebar-about a.nav-item').forEach(a => {
+        a.classList.toggle('active', a.getAttribute('href') === '#' + activeId);
+      });
+    }
+    window.addEventListener('load', () => {
+      const wrapper = document.querySelector('.about-content-wrapper');
+      if (wrapper) wrapper.addEventListener('scroll', updateActiveLink);
+      updateActiveLink();
+    });
+  })();
+</script>
+</body>
+</html>
