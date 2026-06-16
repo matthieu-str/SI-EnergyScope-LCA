@@ -889,11 +889,13 @@
       <div class="scenario-toolbar">
         <label for="level-select">Prospective-regionalization level:</label>
         <select class="scenario-select" id="level-select" onchange="updateSankeys()">
-          <optgroup label="── 2023 reference ──">
+          <optgroup label="── 2023 · Reference ──">
             <option value="2023">2023 — Reference energy system</option>
           </optgroup>
+          <optgroup label="── 2050 · Default ──">
+            <option value="base_wo_iam">Def. (no IAM, no regionalization)</option>
+          </optgroup>
           <optgroup label="── 2050 · SSP5-H (conservative) ──">
-            <option value="SSP5-H_base_wo_iam">SSP5-H · Def. (no IAM, no spatialization)</option>
             <option value="SSP5-H_base">SSP5-H · IAM</option>
             <option value="SSP5-H_spat">SSP5-H · IAM + Spat.</option>
             <option value="SSP5-H_spat_fore">SSP5-H · IAM + Spat. + Fore.</option>
@@ -1371,7 +1373,7 @@
 
   const LEVEL_PATHS = {
     '2023':                 ['sankey_2023','sankey_carbon_2023'],
-    'SSP5-H_base_wo_iam':   ['sankey_SSP5-H_base_wo_iam','sankey_carbon_base_wo_iam-SSP5-H'],
+    'base_wo_iam':          ['sankey_SSP5-H_base_wo_iam','sankey_carbon_base_wo_iam-SSP5-H'],
     'SSP5-H_base':          ['sankey_SSP5-H_base','sankey_carbon_base-SSP5-H'],
     'SSP5-H_spat':          ['sankey_SSP5-H_spat','sankey_carbon_spat-SSP5-H'],
     'SSP5-H_spat_fore':     ['sankey_SSP5-H_spat_fore','sankey_carbon_spat_fore-SSP5-H'],
