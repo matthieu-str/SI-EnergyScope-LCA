@@ -949,10 +949,10 @@
       <div class="sensitivity-toolbar">
         <label>Carbon capture availability:</label>
         <div class="cc-slider-wrap">
-          <span style="font-family:var(--mono);font-size:11px;color:var(--text-faint);">5</span>
-          <input type="range" class="cc-slider" id="cc-slider" min="5" max="35" value="35" step="1" oninput="updateSensitivity()">
-          <span style="font-family:var(--mono);font-size:11px;color:var(--text-faint);">35</span>
-          <span class="cc-value-badge" id="cc-value-badge">35 Mt CO₂/yr</span>
+          <span style="font-family:var(--mono);font-size:11px;color:var(--text-faint);">7</span>
+          <input type="range" class="cc-slider" id="cc-slider" min="7" max="32" value="7" step="0.5" oninput="updateSensitivity()">
+          <span style="font-family:var(--mono);font-size:11px;color:var(--text-faint);">32</span>
+          <span class="cc-value-badge" id="cc-value-badge">7 Mt CO₂/yr</span>
         </div>
         <div style="display:flex;align-items:center;gap:0.5rem;">
           <label>Level:</label>
@@ -985,7 +985,7 @@
           <div class="placeholder-frame" id="sens-energy-placeholder" style="flex:1;">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/><ellipse cx="12" cy="5" rx="9" ry="3"/></svg>
             <strong>Sensitivity — Energy Sankey</strong>
-            <code id="sens-energy-path">Results/sensitivity/sankey_energy_iam_spat_fore_back_ssp5h_35.html</code>
+            <code id="sens-energy-path">Results/sensitivity/spat_fore_back/SSP5-H/sankey_1.html</code>
           </div>
           <iframe id="sens-iframe-energy" src="" frameborder="0" style="display:none; flex:1; min-height:420px;"></iframe>
         </div>
@@ -997,7 +997,7 @@
           <div class="placeholder-frame" id="sens-carbon-placeholder" style="flex:1;">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
             <strong>Sensitivity — Carbon Sankey</strong>
-            <code id="sens-carbon-path">Results/sensitivity/sankey_carbon_iam_spat_fore_back_ssp5h_35.html</code>
+            <code id="sens-carbon-path">Results/sensitivity/spat_fore_back/SSP5-H/sankey_carbon_1.html</code>
           </div>
           <iframe id="sens-iframe-carbon" src="" frameborder="0" style="display:none; flex:1; min-height:420px;"></iframe>
         </div>
@@ -1366,6 +1366,7 @@
     if (first) loadChart(first);
     // Fix 2: also trigger sankey load for per-level pane initial state
     updateSankeys();
+    updateSensitivity();
   });
 
   // ── Per-level Sankey ──
@@ -1443,14 +1444,17 @@
 
   // ── Sensitivity ──
   function updateSensitivity() {
-    const val = parseInt(document.getElementById('cc-slider').value);
+    const val = parseFloat(document.getElementById('cc-slider').value);
     document.getElementById('cc-value-badge').textContent = `${val} Mt CO\u2082/yr`;
+
+    // Map the displayed Mt value (7–32, step 0.5) to the file index i (1–51)
+    const i = Math.round((val - 7) / 0.5) + 1;
 
     const level = document.getElementById('sens-level-select').value;
     const ssp   = document.getElementById('sens-ssp-select').value;
 
-    const energySrc = `Results/sensitivity/sankey_energy_${level}_${ssp}_${val}.html`;
-    const carbonSrc = `Results/sensitivity/sankey_carbon_${level}_${ssp}_${val}.html`;
+    const energySrc = `Results/sensitivity/${level}/${ssp}/sankey_${i}.html`;
+    const carbonSrc = `Results/sensitivity/${level}/${ssp}/sankey_carbon_${i}.html`;
 
     document.getElementById('sens-energy-path').textContent = energySrc;
     document.getElementById('sens-carbon-path').textContent = carbonSrc;
