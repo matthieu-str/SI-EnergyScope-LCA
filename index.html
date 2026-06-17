@@ -440,6 +440,7 @@
       padding: 1rem 1.5rem 1.25rem;
       overflow: hidden;
     }
+    .sens-sankey-grid.single-col { grid-template-columns: 1fr; }
 
     /* ── About pane ── */
     .about-pane-wrapper {
@@ -648,7 +649,7 @@
   <div class="logo-mark">ES</div>
   <h1><strong>EnergyScope-LCA</strong></h1>
   <div class="header-divider"></div>
-  <span class="header-pill">Québec · 2023 – 2050</span>
+  <span class="header-pill">Québec · 2050</span>
   <div class="tab-group">
     <button class="tab-btn active" onclick="switchTab('comparative', this)">Comparative view</button>
     <button class="tab-btn" onclick="switchTab('per-level', this)">Per-level view</button>
@@ -972,12 +973,17 @@
             <option value="SSP2-L">SSP2-L</option>
           </select>
         </div>
+        <div class="stype-tabs">
+          <button class="stype-btn active" onclick="switchSensSankeyType('energy', this)">Energy flows</button>
+          <button class="stype-btn" onclick="switchSensSankeyType('carbon', this)">Carbon flows</button>
+          <button class="stype-btn" onclick="switchSensSankeyType('both', this)">Both</button>
+        </div>
       </div>
       <div class="sensitivity-note">
-        Showing energy system configuration at the selected carbon capture and storage availability. The vertical dashed lines in the paper's Figure 8 correspond to all configurations reaching ≤10 TWh of natural gas imports (yellow) and zero imports (green).
+        Showing energy system configuration at the selected carbon capture and storage availability.
       </div>
-      <div class="sens-sankey-grid">
-        <div class="sankey-card">
+      <div class="sens-sankey-grid single-col" id="sens-sankey-grid">
+        <div class="sankey-card" id="sens-card-energy">
           <div class="sankey-card-header">
             <div class="dot dot-energy"></div>
             <span>Energy flows</span>
@@ -989,7 +995,7 @@
           </div>
           <iframe id="sens-iframe-energy" src="" frameborder="0" style="display:none; flex:1; min-height:420px;"></iframe>
         </div>
-        <div class="sankey-card">
+        <div class="sankey-card" id="sens-card-carbon" style="display:none;">
           <div class="sankey-card-header">
             <div class="dot dot-carbon"></div>
             <span>Carbon flows</span>
@@ -1367,6 +1373,7 @@
     // Fix 2: also trigger sankey load for per-level pane initial state
     updateSankeys();
     updateSensitivity();
+    applySensSankeyLayout();
   });
 
   // ── Per-level Sankey ──
@@ -1432,6 +1439,37 @@
       cardC.style.display = 'none';
       grid.classList.add('single-col');
     } else if (currentSankeyType === 'carbon') {
+      cardE.style.display = 'none';
+      cardC.style.display = '';
+      grid.classList.add('single-col');
+    } else {
+      cardE.style.display = '';
+      cardC.style.display = '';
+      grid.classList.remove('single-col');
+    }
+  }
+
+  // ── Sensitivity: energy/carbon/both toggle (separate state from per-level view) ──
+  let currentSensSankeyType = 'energy';
+
+  function switchSensSankeyType(type, btn) {
+    currentSensSankeyType = type;
+    const toolbar = btn.closest('.stype-tabs');
+    toolbar.querySelectorAll('.stype-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    applySensSankeyLayout();
+  }
+
+  function applySensSankeyLayout() {
+    const grid = document.getElementById('sens-sankey-grid');
+    const cardE = document.getElementById('sens-card-energy');
+    const cardC = document.getElementById('sens-card-carbon');
+
+    if (currentSensSankeyType === 'energy') {
+      cardE.style.display = '';
+      cardC.style.display = 'none';
+      grid.classList.add('single-col');
+    } else if (currentSensSankeyType === 'carbon') {
       cardE.style.display = 'none';
       cardC.style.display = '';
       grid.classList.add('single-col');
