@@ -748,11 +748,11 @@
          data-src="Results/annual_prod_carbon_storage_and_utilization.html"
          data-src-alt=""
          data-has-unit="false"
-         data-title="Carbon sequestration &amp; utilization"
+         data-title="Carbon storage &amp; utilization"
          data-desc="Carbon storage and utilization pathways (Mt CO₂/year)"
          onclick="loadChart(this)">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="6 9 12 15 18 9"/></svg>
-      Carbon sequestration
+      Carbon storage
     </div>
 
     <div class="nav-group-sep"></div>
@@ -947,7 +947,7 @@
     <!-- ── Pane: Sensitivity ── -->
     <div class="pane" id="pane-sensitivity">
       <div class="sensitivity-toolbar">
-        <label>Carbon capture availability:</label>
+        <label>Carbon capture and storage availability:</label>
         <div class="cc-slider-wrap">
           <span style="font-family:var(--mono);font-size:11px;color:var(--text-faint);">7</span>
           <input type="range" class="cc-slider" id="cc-slider" min="7" max="32" value="7" step="0.5" oninput="updateSensitivity()">
@@ -974,7 +974,7 @@
         </div>
       </div>
       <div class="sensitivity-note">
-        Showing energy system configuration at the selected carbon capture availability. The vertical dashed lines in the paper's Figure 8 correspond to all configurations reaching ≤10 TWh of natural gas imports (yellow) and zero imports (green).
+        Showing energy system configuration at the selected carbon capture and storage availability. The vertical dashed lines in the paper's Figure 8 correspond to all configurations reaching ≤10 TWh of natural gas imports (yellow) and zero imports (green).
       </div>
       <div class="sens-sankey-grid">
         <div class="sankey-card">
@@ -1208,7 +1208,7 @@
               <strong>Per-level view</strong> — Inspect the energy and carbon flow Sankey diagrams for a specific prospective-regionalization level and SSP scenario. Use the dropdown to select a configuration and the tabs to toggle between flow types.
             </p>
             <p>
-              <strong>Sensitivity analysis</strong> — Explore how the energy system configuration changes as a function of industrial carbon capture availability (5–35 Mt CO₂/yr). Select the modeling level and SSP scenario; the slider controls the carbon capture value for which the Sankey diagrams are shown.
+              <strong>Sensitivity analysis</strong> — Explore how the energy system configuration changes as a function of industrial carbon capture and storage availability (7–32 Mt CO₂/yr). Select the modeling level and SSP scenario; the slider controls the carbon capture value for which the Sankey diagrams are shown.
             </p>
             <p style="font-size:12px;color:var(--text-faint);margin-top:1.5rem;">
               All chart files are expected in a <code>Results/</code> subdirectory relative to this HTML file, and sensitivity Sankeys in <code>Results/sensitivity/</code>. File naming conventions follow the pattern shown in each placeholder frame. Charts are generated with Plotly from the EnergyScope-LCA Python post-processing pipeline.
