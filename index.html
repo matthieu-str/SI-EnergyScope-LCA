@@ -117,6 +117,7 @@
     .app-body {
       display: flex;
       flex: 1;
+      min-height: 0;
       overflow: hidden;
     }
 
@@ -175,11 +176,12 @@
     /* ── Content ── */
     main {
       flex: 1;
-      overflow-y: auto;
+      min-height: 0;
+      overflow: hidden;
       display: flex;
       flex-direction: column;
     }
-    .pane { display: none; flex: 1; flex-direction: column; }
+    .pane { display: none; flex: 1; flex-direction: column; min-height: 0; }
     .pane.active { display: flex; }
 
     /* ── Chart header ── */
@@ -227,19 +229,26 @@
       color: var(--accent);
       font-weight: 500;
     }
+    .toggle-sep {
+      width: 1px;
+      height: 22px;
+      background: var(--border);
+      flex-shrink: 0;
+    }
     .chart-frame-wrap {
       flex: 1;
+      min-height: 0;
       padding: 1rem 1.5rem 1.25rem;
       display: flex;
       flex-direction: column;
     }
     .chart-frame-wrap iframe {
       flex: 1;
+      min-height: 0;
       border: 1px solid var(--border);
       border-radius: var(--radius);
       background: white;
       width: 100%;
-      min-height: 480px;
     }
 
     /* ── Scenario pane ── */
