@@ -679,6 +679,8 @@
     <div class="nav-item active"
          data-src="Results/annual_prod_electricity.html"
          data-src-alt="Results/f_mult_electricity.html"
+         data-src-delta="Results/annual_prod_electricity_delta.html"
+         data-src-alt-delta="Results/f_mult_electricity_delta.html"
          data-has-unit="true"
          data-unit-a="TWh/yr" data-unit-b="GW"
          data-title="Electricity production"
@@ -691,6 +693,8 @@
     <div class="nav-item"
          data-src="Results/annual_prod_heat.html"
          data-src-alt=""
+         data-src-delta="Results/annual_prod_heat_delta.html"
+         data-src-alt-delta=""
          data-has-unit="false"
          data-title="Heat production"
          data-desc="Industrial and domestic heat production technologies"
@@ -702,6 +706,8 @@
     <div class="nav-item"
          data-src="Results/annual_prod_passenger_mobility.html"
          data-src-alt=""
+         data-src-delta="Results/annual_prod_passenger_mobility_delta.html"
+         data-src-alt-delta=""
          data-has-unit="false"
          data-title="Passenger mobility"
          data-desc="Passenger transport technologies (Gpkm/year)"
@@ -713,6 +719,8 @@
     <div class="nav-item"
          data-src="Results/annual_prod_freight_mobility.html"
          data-src-alt=""
+         data-src-delta="Results/annual_prod_freight_mobility_delta.html"
+         data-src-alt-delta=""
          data-has-unit="false"
          data-title="Freight mobility"
          data-desc="Freight transport technologies (Gtkm/year)"
@@ -724,6 +732,8 @@
     <div class="nav-item"
          data-src="Results/annual_prod_other.html"
          data-src-alt=""
+         data-src-delta="Results/annual_prod_other_delta.html"
+         data-src-alt-delta=""
          data-has-unit="false"
          data-title="Alternative fuels production"
          data-desc="Hydrogen, biofuels, and synthetic fuels production (TWh/year)"
@@ -735,6 +745,8 @@
     <div class="nav-item"
          data-src="Results/annual_res.html"
          data-src-alt=""
+         data-src-delta="Results/annual_res_delta.html"
+         data-src-alt-delta=""
          data-has-unit="false"
          data-title="Energy resources"
          data-desc="Primary energy resources and imports (TWh/year)"
@@ -746,6 +758,8 @@
     <div class="nav-item"
          data-src="Results/annual_prod_carbon_capture.html"
          data-src-alt=""
+         data-src-delta="Results/annual_prod_carbon_capture_delta.html"
+         data-src-alt-delta=""
          data-has-unit="false"
          data-title="Carbon capture"
          data-desc="Post-combustion carbon capture deployment (Mt CO₂/year)"
@@ -757,6 +771,8 @@
     <div class="nav-item"
          data-src="Results/annual_prod_carbon_storage_and_utilization.html"
          data-src-alt=""
+         data-src-delta="Results/annual_prod_carbon_storage_and_utilization_delta.html"
+         data-src-alt-delta=""
          data-has-unit="false"
          data-title="Carbon storage &amp; utilization"
          data-desc="Carbon storage and utilization pathways (Mt CO₂/year)"
@@ -877,6 +893,11 @@
           <div class="unit-toggle" id="unit-toggle" style="display:none;">
             <button class="unit-btn active" onclick="switchUnit('a', this)">TWh/yr</button>
             <button class="unit-btn" onclick="switchUnit('b', this)">GW</button>
+          </div>
+          <div class="toggle-sep" id="unit-delta-sep" style="display:none;"></div>
+          <div class="unit-toggle" id="delta-toggle" style="display:none;">
+            <button class="unit-btn active" onclick="switchDelta('abs', this)">Configuration</button>
+            <button class="unit-btn" onclick="switchDelta('delta', this)">Δ vs. Def.</button>
           </div>
           <div class="unit-toggle" id="contrib-toggle" style="display:none;">
             <button class="unit-btn active" onclick="switchContrib('sector', this)">By sector</button>
@@ -1271,16 +1292,17 @@
 
   // ── Comparative chart loading ──
   let currentUnitMode = 'a';
+  let currentDeltaMode = 'abs'; // 'abs' or 'delta'
   let currentContribMode = 'sector'; // 'sector' or 'tech'
   let currentNavItem = null;
 
   function loadChart(el) {
-    // Update nav active state
     document.querySelectorAll('#sidebar-comparative .nav-item').forEach(n => n.classList.remove('active'));
     el.classList.add('active');
     currentNavItem = el;
 
     const isImpact = el.getAttribute('data-is-impact') === 'true';
+    const isConfig = !isImpact;
     const hasUnit  = el.getAttribute('data-has-unit') === 'true';
     const srcAlt   = el.getAttribute('data-src-alt') || '';
     const title    = el.getAttribute('data-title') || '';
@@ -1289,24 +1311,37 @@
 
     document.getElementById('chart-title').textContent = title;
 
-    // Unit toggle (energy configs only)
-    const unitToggle = document.getElementById('unit-toggle');
-    if (hasUnit && srcAlt) {
+    // Unit toggle (config charts with alt-unit only)
+    const unitToggle   = document.getElementById('unit-toggle');
+    const unitDeltaSep = document.getElementById('unit-delta-sep');
+    if (isConfig && hasUnit && srcAlt) {
       unitToggle.style.display = '';
       unitToggle.children[0].textContent = unitA;
       unitToggle.children[1].textContent = unitB;
       currentUnitMode = 'a';
       unitToggle.querySelectorAll('.unit-btn').forEach((b, i) => b.classList.toggle('active', i === 0));
+      unitDeltaSep.style.display = '';
     } else {
       unitToggle.style.display = 'none';
+      unitDeltaSep.style.display = 'none';
       currentUnitMode = 'a';
+    }
+
+    // Delta toggle (all config charts)
+    const deltaToggle = document.getElementById('delta-toggle');
+    if (isConfig) {
+      deltaToggle.style.display = '';
+      currentDeltaMode = 'abs';
+      deltaToggle.querySelectorAll('.unit-btn').forEach((b, i) => b.classList.toggle('active', i === 0));
+    } else {
+      deltaToggle.style.display = 'none';
+      currentDeltaMode = 'abs';
     }
 
     // Contribution toggle (impact charts only)
     const contribToggle = document.getElementById('contrib-toggle');
     if (isImpact) {
       contribToggle.style.display = '';
-      // Keep current mode, just refresh active state
       contribToggle.querySelectorAll('.unit-btn').forEach((b, i) => {
         b.classList.toggle('active', (i === 0 && currentContribMode === 'sector') || (i === 1 && currentContribMode === 'tech'));
       });
@@ -1314,11 +1349,8 @@
       contribToggle.style.display = 'none';
     }
 
-    // Resolve src and desc
-    const src = resolveCurrentSrc(el);
-    const desc = resolveCurrentDesc(el);
-    document.getElementById('chart-desc').textContent = desc;
-    setChartIframe(src);
+    document.getElementById('chart-desc').textContent = resolveCurrentDesc(el);
+    setChartIframe(resolveCurrentSrc(el));
   }
 
   function resolveCurrentSrc(el) {
@@ -1329,8 +1361,13 @@
         ? (el.getAttribute('data-src-tech') || '')
         : (el.getAttribute('data-src-sector') || '');
     }
-    const src    = el.getAttribute('data-src') || '';
-    const srcAlt = el.getAttribute('data-src-alt') || '';
+    const src         = el.getAttribute('data-src') || '';
+    const srcAlt      = el.getAttribute('data-src-alt') || '';
+    const srcDelta    = el.getAttribute('data-src-delta') || '';
+    const srcAltDelta = el.getAttribute('data-src-alt-delta') || '';
+    if (currentDeltaMode === 'delta') {
+      return (currentUnitMode === 'b' && srcAltDelta) ? srcAltDelta : srcDelta;
+    }
     return (currentUnitMode === 'b' && srcAlt) ? srcAlt : src;
   }
 
@@ -1342,7 +1379,8 @@
         ? (el.getAttribute('data-desc-tech') || '')
         : (el.getAttribute('data-desc-sector') || '');
     }
-    return el.getAttribute('data-desc') || '';
+    const base = el.getAttribute('data-desc') || '';
+    return currentDeltaMode === 'delta' ? base + ' — Δ vs. Def.' : base;
   }
 
   function switchUnit(mode, btn) {
@@ -1350,6 +1388,15 @@
     document.getElementById('unit-toggle').querySelectorAll('.unit-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
     if (!currentNavItem) return;
+    setChartIframe(resolveCurrentSrc(currentNavItem));
+  }
+
+  function switchDelta(mode, btn) {
+    currentDeltaMode = mode;
+    document.getElementById('delta-toggle').querySelectorAll('.unit-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    if (!currentNavItem) return;
+    document.getElementById('chart-desc').textContent = resolveCurrentDesc(currentNavItem);
     setChartIframe(resolveCurrentSrc(currentNavItem));
   }
 
