@@ -678,11 +678,13 @@
 
     <div class="nav-item active"
          data-src="Results/annual_prod_electricity.html"
-         data-src-alt="Results/f_mult_electricity.html"
+         data-src-alt="Results/annual_prod_electricity_gwyr.html"
+         data-src-alt2="Results/f_mult_electricity.html"
          data-src-delta="Results/annual_prod_electricity_delta.html"
-         data-src-alt-delta="Results/f_mult_electricity_delta.html"
+         data-src-alt-delta="Results/annual_prod_electricity_delta_gwyr.html"
+         data-src-alt2-delta="Results/f_mult_electricity_delta.html"
          data-has-unit="true"
-         data-unit-a="TWh/yr" data-unit-b="GW"
+         data-unit-a="TWh/yr" data-unit-b="GW.yr/yr" data-unit-c="GW"
          data-title="Electricity production"
          data-desc="Electricity generation technologies across prospective-regionalization levels"
          onclick="loadChart(this)">
@@ -892,7 +894,8 @@
         <div style="display:flex;gap:0.5rem;align-items:center;">
           <div class="unit-toggle" id="unit-toggle" style="display:none;">
             <button class="unit-btn active" onclick="switchUnit('a', this)">TWh/yr</button>
-            <button class="unit-btn" onclick="switchUnit('b', this)">GW</button>
+            <button class="unit-btn" onclick="switchUnit('b', this)">GW.yr/yr</button>
+            <button class="unit-btn" id="unit-btn-c" onclick="switchUnit('c', this)">GW</button>
           </div>
           <div class="toggle-sep" id="unit-delta-sep" style="display:none;"></div>
           <div class="unit-toggle" id="delta-toggle" style="display:none;">
@@ -1314,10 +1317,19 @@
     // Unit toggle (config charts with alt-unit only)
     const unitToggle   = document.getElementById('unit-toggle');
     const unitDeltaSep = document.getElementById('unit-delta-sep');
+    const unitBtnC     = document.getElementById('unit-btn-c');
     if (isConfig && hasUnit && srcAlt) {
+      const unitC = el.getAttribute('data-unit-c') || '';
       unitToggle.style.display = '';
-      unitToggle.children[0].textContent = unitA;
-      unitToggle.children[1].textContent = unitB;
+      unitToggle.querySelectorAll('.unit-btn')[0].textContent = unitA;
+      unitToggle.querySelectorAll('.unit-btn')[1].textContent = unitB;
+      // Third button only shown when unit-c is defined
+      if (unitC) {
+        unitBtnC.textContent = unitC;
+        unitBtnC.style.display = '';
+      } else {
+        unitBtnC.style.display = 'none';
+      }
       currentUnitMode = 'a';
       unitToggle.querySelectorAll('.unit-btn').forEach((b, i) => b.classList.toggle('active', i === 0));
       unitDeltaSep.style.display = '';
@@ -1361,14 +1373,20 @@
         ? (el.getAttribute('data-src-tech') || '')
         : (el.getAttribute('data-src-sector') || '');
     }
-    const src         = el.getAttribute('data-src') || '';
-    const srcAlt      = el.getAttribute('data-src-alt') || '';
-    const srcDelta    = el.getAttribute('data-src-delta') || '';
-    const srcAltDelta = el.getAttribute('data-src-alt-delta') || '';
+    const src          = el.getAttribute('data-src') || '';
+    const srcAlt       = el.getAttribute('data-src-alt') || '';
+    const srcAlt2      = el.getAttribute('data-src-alt2') || '';
+    const srcDelta     = el.getAttribute('data-src-delta') || '';
+    const srcAltDelta  = el.getAttribute('data-src-alt-delta') || '';
+    const srcAlt2Delta = el.getAttribute('data-src-alt2-delta') || '';
     if (currentDeltaMode === 'delta') {
-      return (currentUnitMode === 'b' && srcAltDelta) ? srcAltDelta : srcDelta;
+      if (currentUnitMode === 'c') return srcAlt2Delta || srcDelta;
+      if (currentUnitMode === 'b') return srcAltDelta  || srcDelta;
+      return srcDelta;
     }
-    return (currentUnitMode === 'b' && srcAlt) ? srcAlt : src;
+    if (currentUnitMode === 'c') return srcAlt2 || src;
+    if (currentUnitMode === 'b') return srcAlt  || src;
+    return src;
   }
 
   function resolveCurrentDesc(el) {
