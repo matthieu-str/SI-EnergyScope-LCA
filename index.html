@@ -699,7 +699,7 @@
          data-src-alt-delta=""
          data-has-unit="false"
          data-title="Heat production"
-         data-desc="Industrial and domestic heat production technologies"
+         data-desc="Industrial and domestic heat production technologies across prospective-regionalization levels"
          onclick="loadChart(this)">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-flame-icon lucide-flame"><path d="M12 3q1 4 4 6.5t3 5.5a1 1 0 0 1-14 0 5 5 0 0 1 1-3 1 1 0 0 0 5 0c0-2-1.5-3-1.5-5q0-2 2.5-4"/></svg>
       Heat
@@ -712,7 +712,7 @@
          data-src-alt-delta=""
          data-has-unit="false"
          data-title="Passenger mobility"
-         data-desc="Passenger transport technologies (Gpkm/year)"
+         data-desc="Passenger transport technologies across prospective-regionalization levels"
          onclick="loadChart(this)">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-car-icon lucide-car"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"/><circle cx="7" cy="17" r="2"/><path d="M9 17h6"/><circle cx="17" cy="17" r="2"/></svg>
       Passenger mobility
@@ -725,7 +725,7 @@
          data-src-alt-delta=""
          data-has-unit="false"
          data-title="Freight mobility"
-         data-desc="Freight transport technologies (Gtkm/year)"
+         data-desc="Freight transport technologies across prospective-regionalization levels"
          onclick="loadChart(this)">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M1 3h15v13H1z"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
       Freight mobility
@@ -738,7 +738,7 @@
          data-src-alt-delta=""
          data-has-unit="false"
          data-title="Alternative fuels production"
-         data-desc="Hydrogen, biofuels, and synthetic fuels production (TWh/year)"
+         data-desc="Hydrogen, biofuels, and synthetic fuels production technologies across prospective-regionalization levels"
          onclick="loadChart(this)">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-fuel-icon lucide-fuel"><path d="M14 13h2a2 2 0 0 1 2 2v2a2 2 0 0 0 4 0v-6.998a2 2 0 0 0-.59-1.42L18 5"/><path d="M14 21V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v16"/><path d="M2 21h13"/><path d="M3 9h11"/></svg>
       Alternative fuels
@@ -751,7 +751,7 @@
          data-src-alt-delta=""
          data-has-unit="false"
          data-title="Energy resources"
-         data-desc="Primary energy resources and imports (TWh/year)"
+         data-desc="Primary energy resources and imports"
          onclick="loadChart(this)">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-import-icon lucide-import"><path d="M12 3v12"/><path d="m8 11 4 4 4-4"/><path d="M8 5H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-4"/></svg>
       Energy resources
@@ -764,7 +764,7 @@
          data-src-alt-delta=""
          data-has-unit="false"
          data-title="Carbon capture"
-         data-desc="Post-combustion carbon capture deployment (Mt CO₂/year)"
+         data-desc="Carbon capture technologies deployment across prospective-regionalization levels"
          onclick="loadChart(this)">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-waves-vertical-icon lucide-waves-vertical"><path d="M12 2q2 2.5 0 5t0 5 0 5 0 5"/><path d="M19 2q2 2.5 0 5t0 5 0 5 0 5"/><path d="M5 2q2 2.5 0 5t0 5 0 5 0 5"/></svg>
       Carbon capture
@@ -777,7 +777,7 @@
          data-src-alt-delta=""
          data-has-unit="false"
          data-title="Carbon storage &amp; utilization"
-         data-desc="Carbon storage and utilization pathways (Mt CO₂/year)"
+         data-desc="Carbon storage and utilization pathways across prospective-regionalization levels"
          onclick="loadChart(this)">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="6 9 12 15 18 9"/></svg>
       Carbon storage
@@ -1361,7 +1361,7 @@
       contribToggle.style.display = 'none';
     }
 
-    document.getElementById('chart-desc').textContent = resolveCurrentDesc(el);
+    document.getElementById('chart-desc').innerHTML = resolveCurrentDesc(el);
     setChartIframe(resolveCurrentSrc(el));
   }
 
