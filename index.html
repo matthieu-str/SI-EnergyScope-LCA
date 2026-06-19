@@ -1398,7 +1398,7 @@
         : (el.getAttribute('data-desc-sector') || '');
     }
     const base = el.getAttribute('data-desc') || '';
-    return currentDeltaMode === 'delta' ? base + ' — Δ vs. Def.' : base;
+    return currentDeltaMode === 'delta' ? base + ' — Δ vs. Def. (%)<br>Normalization is based on the total amount of the default configuration' : base;
   }
 
   function switchUnit(mode, btn) {
@@ -1414,7 +1414,7 @@
     document.getElementById('delta-toggle').querySelectorAll('.unit-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
     if (!currentNavItem) return;
-    document.getElementById('chart-desc').textContent = resolveCurrentDesc(currentNavItem);
+    document.getElementById('chart-desc').innerHTML = resolveCurrentDesc(currentNavItem);
     setChartIframe(resolveCurrentSrc(currentNavItem));
   }
 
@@ -1423,7 +1423,7 @@
     document.getElementById('contrib-toggle').querySelectorAll('.unit-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
     if (!currentNavItem) return;
-    document.getElementById('chart-desc').textContent = resolveCurrentDesc(currentNavItem);
+    document.getElementById('chart-desc').innerHTML = resolveCurrentDesc(currentNavItem);
     setChartIframe(resolveCurrentSrc(currentNavItem));
   }
 
