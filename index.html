@@ -676,7 +676,7 @@
 
     <div class="section-label">Energy system configurations</div>
 
-    <div class="nav-item active"
+    <div class="nav-item active" id="nav-electricity"
          data-src="Results/annual_prod_electricity.html"
          data-src-alt="Results/annual_prod_electricity_gwyr.html"
          data-src-alt2="Results/f_mult_electricity.html"
@@ -692,7 +692,7 @@
       Electricity
     </div>
 
-    <div class="nav-item"
+    <div class="nav-item" id="nav-heat"
          data-src="Results/annual_prod_heat.html"
          data-src-alt=""
          data-src-delta="Results/annual_prod_heat_delta.html"
@@ -705,7 +705,7 @@
       Heat
     </div>
 
-    <div class="nav-item"
+    <div class="nav-item" id="nav-passenger-mobility"
          data-src="Results/annual_prod_passenger_mobility.html"
          data-src-alt=""
          data-src-delta="Results/annual_prod_passenger_mobility_delta.html"
@@ -718,7 +718,7 @@
       Passenger mobility
     </div>
 
-    <div class="nav-item"
+    <div class="nav-item" id="nav-freight-mobility"
          data-src="Results/annual_prod_freight_mobility.html"
          data-src-alt=""
          data-src-delta="Results/annual_prod_freight_mobility_delta.html"
@@ -731,7 +731,7 @@
       Freight mobility
     </div>
 
-    <div class="nav-item"
+    <div class="nav-item" id="nav-alt-fuels"
          data-src="Results/annual_prod_other.html"
          data-src-alt=""
          data-src-delta="Results/annual_prod_other_delta.html"
@@ -744,7 +744,7 @@
       Alternative fuels
     </div>
 
-    <div class="nav-item"
+    <div class="nav-item" id="nav-energy-resources"
          data-src="Results/annual_res.html"
          data-src-alt=""
          data-src-delta="Results/annual_res_delta.html"
@@ -757,7 +757,7 @@
       Energy resources
     </div>
 
-    <div class="nav-item"
+    <div class="nav-item" id="nav-carbon-capture"
          data-src="Results/annual_prod_carbon_capture.html"
          data-src-alt=""
          data-src-delta="Results/annual_prod_carbon_capture_delta.html"
@@ -770,7 +770,7 @@
       Carbon capture
     </div>
 
-    <div class="nav-item"
+    <div class="nav-item" id="nav-carbon-storage"
          data-src="Results/annual_prod_carbon_storage_and_utilization.html"
          data-src-alt=""
          data-src-delta="Results/annual_prod_carbon_storage_and_utilization_delta.html"
@@ -786,7 +786,7 @@
     <div class="nav-group-sep"></div>
     <div class="section-label">Environmental impacts</div>
 
-    <div class="nav-item"
+    <div class="nav-item" id="nav-total-hh"
          data-src-sector="Results/regionalization_levels_Sector_contrib_total_human_health_2050.html"
          data-src-tech="Results/regionalization_levels_index_contrib_total_human_health_2050.html"
          data-has-unit="false"
@@ -799,7 +799,7 @@
       Total human health
     </div>
 
-    <div class="nav-item"
+    <div class="nav-item" id="nav-total-eq"
          data-src-sector="Results/regionalization_levels_Sector_contrib_total_ecosystem_quality_2050.html"
          data-src-tech="Results/regionalization_levels_index_contrib_total_ecosystem_quality_2050.html"
          data-has-unit="false"
@@ -812,7 +812,7 @@
       Total ecosystem quality
     </div>
 
-    <div class="nav-item"
+    <div class="nav-item" id="nav-remaining-hh"
          data-src-sector="Results/regionalization_levels_Sector_contrib_remaining_human_health_2050.html"
          data-src-tech="Results/regionalization_levels_index_contrib_remaining_human_health_2050.html"
          data-has-unit="false"
@@ -825,7 +825,7 @@
       Remaining human health
     </div>
 
-    <div class="nav-item"
+    <div class="nav-item" id="nav-remaining-eq"
          data-src-sector="Results/regionalization_levels_Sector_contrib_remaining_ecosystem_quality_2050.html"
          data-src-tech="Results/regionalization_levels_index_contrib_remaining_ecosystem_quality_2050.html"
          data-has-unit="false"
@@ -838,7 +838,7 @@
       Remaining ecosystem quality
     </div>
 
-    <div class="nav-item"
+    <div class="nav-item" id="nav-climate-change"
          data-src-sector="Results/regionalization_levels_Sector_contrib_climate_change_short_term_2050.html"
          data-src-tech="Results/regionalization_levels_index_contrib_climate_change_short_term_2050.html"
          data-has-unit="false"
@@ -851,7 +851,7 @@
       Climate change
     </div>
 
-    <div class="nav-item"
+    <div class="nav-item" id="nav-cc-territorial"
          data-src-sector="Results/regionalization_levels_Sector_contrib_climate_change_short_term_territorial_2050.html"
          data-src-tech="Results/regionalization_levels_index_contrib_climate_change_short_term_territorial_2050.html"
          data-has-unit="false"
@@ -864,7 +864,7 @@
       Climate change — territorial
     </div>
 
-    <div class="nav-item"
+    <div class="nav-item" id="nav-cc-abroad"
          data-src-sector="Results/regionalization_levels_Sector_contrib_climate_change_short_term_abroad_2050.html"
          data-src-tech="Results/regionalization_levels_index_contrib_climate_change_short_term_abroad_2050.html"
          data-has-unit="false"
@@ -1589,7 +1589,6 @@
     }
   }
 
-  // ── About scroll ──
   // ── About nav: highlight active section on scroll ──
   (function() {
     const sectionIds = ['about-paper', 'about-levels', 'about-env', 'about-tools', 'about-app'];
@@ -1614,6 +1613,227 @@
       updateActiveLink();
     });
   })();
+
+  // ══════════════════════════════════════════════════
+  // URL ROUTING — deep links for every section/state
+  // ══════════════════════════════════════════════════
+  //
+  // Hash formats:
+  //   #tab=comparative&item=electricity&unit=a&delta=abs&contrib=sector
+  //   #tab=per-level&level=SSP5-H_spat&view=energy
+  //   #tab=sensitivity&level=spat_fore_back&ssp=SSP5-H&cc=12&view=energy
+  //   #tab=about&section=levels   (also accepts plain #about-levels for backward compat)
+  //
+  let isApplyingRoute = false; // guards against feedback loops while restoring state
+
+  function parseHash() {
+    const raw = location.hash.replace(/^#/, '');
+    if (!raw) return {};
+    // Backward-compat: plain "#about-levels" style anchors used by the About page
+    if (!raw.includes('=')) {
+      if (raw.startsWith('about-')) {
+        return { tab: 'about', section: raw.slice('about-'.length) };
+      }
+      return {};
+    }
+    const params = {};
+    raw.split('&').forEach(pair => {
+      const idx = pair.indexOf('=');
+      if (idx === -1) return;
+      const key = decodeURIComponent(pair.slice(0, idx));
+      const val = decodeURIComponent(pair.slice(idx + 1));
+      params[key] = val;
+    });
+    return params;
+  }
+
+  function buildHash(params) {
+    return Object.entries(params)
+      .filter(([, v]) => v !== undefined && v !== null && v !== '')
+      .map(([k, v]) => `${encodeURIComponent(k)}=${encodeURIComponent(v)}`)
+      .join('&');
+  }
+
+  function updateHash(params) {
+    if (isApplyingRoute) return; // don't write while we're applying a route
+    const newHash = '#' + buildHash(params);
+    if (location.hash !== newHash) {
+      history.replaceState(null, '', newHash);
+    }
+  }
+
+  // ── Per-tab state readers (called after any user interaction to sync the URL) ──
+  function syncComparativeHash() {
+    if (currentTab !== 'comparative' || !currentNavItem) return;
+    const itemId = (currentNavItem.id || '').replace(/^nav-/, '');
+    updateHash({
+      tab: 'comparative',
+      item: itemId,
+      unit: currentUnitMode,
+      delta: currentDeltaMode,
+      contrib: currentContribMode
+    });
+  }
+
+  function syncPerLevelHash() {
+    if (currentTab !== 'per-level') return;
+    const level = document.getElementById('level-select').value;
+    updateHash({ tab: 'per-level', level: level, view: currentSankeyType });
+  }
+
+  function syncSensitivityHash() {
+    if (currentTab !== 'sensitivity') return;
+    const level = document.getElementById('sens-level-select').value;
+    const ssp   = document.getElementById('sens-ssp-select').value;
+    const cc    = document.getElementById('cc-slider').value;
+    updateHash({ tab: 'sensitivity', level: level, ssp: ssp, cc: cc, view: currentSensSankeyType });
+  }
+
+  function syncAboutHash(sectionId) {
+    if (currentTab !== 'about') return;
+    updateHash({ tab: 'about', section: (sectionId || '').replace(/^about-/, '') });
+  }
+
+  // ── Apply a parsed route to the app state ──
+  function applyRoute() {
+    const p = parseHash();
+    if (!p.tab) return; // nothing to restore — leave default state as-is
+
+    isApplyingRoute = true;
+
+    // 1. Switch tab
+    const tabBtnMap = {
+      'comparative': 0, 'per-level': 1, 'sensitivity': 2, 'about': 3
+    };
+    const tabBtns = document.querySelectorAll('.tab-btn');
+    const btnIndex = tabBtnMap[p.tab];
+    if (btnIndex !== undefined && tabBtns[btnIndex]) {
+      switchTab(p.tab, tabBtns[btnIndex]);
+    }
+
+    // 2. Restore per-tab state
+    if (p.tab === 'comparative' && p.item) {
+      const el = document.getElementById('nav-' + p.item);
+      if (el) {
+        loadChart(el); // resets unit/delta/contrib to defaults first
+        if (p.unit && (p.unit === 'b' || p.unit === 'c')) {
+          const unitToggle = document.getElementById('unit-toggle');
+          const btns = unitToggle.querySelectorAll('.unit-btn');
+          const target = p.unit === 'c' ? btns[2] : btns[1];
+          if (target && target.style.display !== 'none') switchUnit(p.unit, target);
+        }
+        if (p.delta === 'delta') {
+          const deltaToggle = document.getElementById('delta-toggle');
+          const btns = deltaToggle.querySelectorAll('.unit-btn');
+          if (btns[1]) switchDelta('delta', btns[1]);
+        }
+        if (p.contrib === 'tech') {
+          const contribToggle = document.getElementById('contrib-toggle');
+          const btns = contribToggle.querySelectorAll('.unit-btn');
+          if (btns[1]) switchContrib('tech', btns[1]);
+        }
+      }
+    } else if (p.tab === 'per-level') {
+      if (p.level) {
+        const sel = document.getElementById('level-select');
+        if ([...sel.options].some(o => o.value === p.level)) sel.value = p.level;
+      }
+      updateSankeys();
+      if (p.view && p.view !== currentSankeyType) {
+        const btnMap = { energy: 0, carbon: 1, both: 2 };
+        const idx = btnMap[p.view];
+        const btns = document.querySelectorAll('#pane-per-level .stype-btn');
+        if (idx !== undefined && btns[idx]) switchSankeyType(p.view, btns[idx]);
+      }
+    } else if (p.tab === 'sensitivity') {
+      if (p.level) {
+        const sel = document.getElementById('sens-level-select');
+        if ([...sel.options].some(o => o.value === p.level)) sel.value = p.level;
+      }
+      if (p.ssp) {
+        const sel = document.getElementById('sens-ssp-select');
+        if ([...sel.options].some(o => o.value === p.ssp)) sel.value = p.ssp;
+      }
+      if (p.cc) {
+        const slider = document.getElementById('cc-slider');
+        const ccNum = parseFloat(p.cc);
+        if (!isNaN(ccNum) && ccNum >= parseFloat(slider.min) && ccNum <= parseFloat(slider.max)) {
+          slider.value = ccNum;
+        }
+      }
+      updateSensitivity();
+      if (p.view && p.view !== currentSensSankeyType) {
+        const btnMap = { energy: 0, carbon: 1, both: 2 };
+        const idx = btnMap[p.view];
+        const btns = document.querySelectorAll('#pane-sensitivity .stype-btn');
+        if (idx !== undefined && btns[idx]) switchSensSankeyType(p.view, btns[idx]);
+      }
+    } else if (p.tab === 'about' && p.section) {
+      const target = document.getElementById('about-' + p.section);
+      const wrapper = document.querySelector('.about-content-wrapper');
+      if (target && wrapper) {
+        // jump immediately (no smooth scroll) since this is an incoming deep link
+        const elTop = target.getBoundingClientRect().top;
+        const wrapperTop = wrapper.getBoundingClientRect().top;
+        wrapper.scrollTop = wrapper.scrollTop + (elTop - wrapperTop) - 24;
+      }
+    }
+
+    isApplyingRoute = false;
+  }
+
+  // ── Wire up hash syncing on every relevant interaction ──
+  // Tabs
+  document.querySelectorAll('.tab-btn').forEach((btn, i) => {
+    btn.addEventListener('click', () => {
+      const tabs = ['comparative', 'per-level', 'sensitivity', 'about'];
+      const tab = tabs[i];
+      if (isApplyingRoute) return;
+      if (tab === 'comparative') setTimeout(syncComparativeHash, 0);
+      else if (tab === 'per-level') setTimeout(syncPerLevelHash, 0);
+      else if (tab === 'sensitivity') setTimeout(syncSensitivityHash, 0);
+      else if (tab === 'about') updateHash({ tab: 'about', section: 'paper' });
+    });
+  });
+
+  // Comparative: nav items + unit/delta/contrib toggles
+  document.querySelectorAll('#sidebar-comparative .nav-item').forEach(el => {
+    el.addEventListener('click', () => setTimeout(syncComparativeHash, 0));
+  });
+  document.querySelectorAll('#unit-toggle .unit-btn, #delta-toggle .unit-btn, #contrib-toggle .unit-btn').forEach(btn => {
+    btn.addEventListener('click', () => setTimeout(syncComparativeHash, 0));
+  });
+
+  // Per-level: select + sankey view buttons
+  document.getElementById('level-select').addEventListener('change', () => setTimeout(syncPerLevelHash, 0));
+  document.querySelectorAll('#pane-per-level .stype-btn').forEach(btn => {
+    btn.addEventListener('click', () => setTimeout(syncPerLevelHash, 0));
+  });
+
+  // Sensitivity: slider, selects, sankey view buttons
+  document.getElementById('cc-slider').addEventListener('input', () => setTimeout(syncSensitivityHash, 0));
+  document.getElementById('sens-level-select').addEventListener('change', () => setTimeout(syncSensitivityHash, 0));
+  document.getElementById('sens-ssp-select').addEventListener('change', () => setTimeout(syncSensitivityHash, 0));
+  document.querySelectorAll('#pane-sensitivity .stype-btn').forEach(btn => {
+    btn.addEventListener('click', () => setTimeout(syncSensitivityHash, 0));
+  });
+
+  // About: anchor links already navigate via native hash; just sync our format alongside
+  document.querySelectorAll('#sidebar-about a.nav-item').forEach(a => {
+    a.addEventListener('click', () => {
+      const sectionId = a.getAttribute('href').replace(/^#/, '');
+      setTimeout(() => syncAboutHash(sectionId), 0);
+    });
+  });
+
+  // Apply route on initial load (after the existing default-state load logic runs)
+  window.addEventListener('load', () => {
+    applyRoute();
+  });
+  // Support browser back/forward and manually-edited hashes
+  window.addEventListener('hashchange', () => {
+    if (!isApplyingRoute) applyRoute();
+  });
 </script>
 </body>
 </html>
