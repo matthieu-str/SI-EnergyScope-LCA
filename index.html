@@ -235,6 +235,37 @@
       background: var(--border);
       flex-shrink: 0;
     }
+    .year-toggle {
+      display: flex;
+      gap: 3px;
+      flex-shrink: 0;
+    }
+    .year-btn {
+      font-family: var(--mono);
+      font-size: 11px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      padding: 4px 10px;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: all 0.12s;
+      font-weight: 500;
+    }
+    .year-btn:hover { border-color: var(--border-strong); color: var(--text); }
+    .year-btn.active {
+      background: var(--accent2-light);
+      border-color: var(--accent2);
+      color: var(--accent2);
+      font-weight: 600;
+    }
+    .toggle-group-sep {
+      width: 1px;
+      height: 22px;
+      background: var(--border-strong);
+      flex-shrink: 0;
+      margin: 0 4px;
+    }
     .chart-frame-wrap {
       flex: 1;
       min-height: 0;
@@ -658,7 +689,7 @@
   <div class="logo-mark">ES</div>
   <h1><strong>EnergyScope-LCA</strong></h1>
   <div class="header-divider"></div>
-  <span class="header-pill">Québec · 2050</span>
+  <span class="header-pill">Québec · 2023 & 2050</span>
   <div class="tab-group">
     <button class="tab-btn active" onclick="switchTab('comparative', this)">Comparative view</button>
     <button class="tab-btn" onclick="switchTab('per-level', this)">Per-level view</button>
@@ -789,6 +820,8 @@
     <div class="nav-item" id="nav-total-hh"
          data-src-sector="Results/regionalization_levels_Sector_contrib_total_human_health_2050.html"
          data-src-tech="Results/regionalization_levels_index_contrib_total_human_health_2050.html"
+         data-src-sector-2023="Results/regionalization_levels_Sector_contrib_total_human_health.html"
+         data-src-tech-2023="Results/regionalization_levels_index_contrib_total_human_health.html"
          data-has-unit="false"
          data-is-impact="true"
          data-title="Total human health"
@@ -802,6 +835,8 @@
     <div class="nav-item" id="nav-total-eq"
          data-src-sector="Results/regionalization_levels_Sector_contrib_total_ecosystem_quality_2050.html"
          data-src-tech="Results/regionalization_levels_index_contrib_total_ecosystem_quality_2050.html"
+         data-src-sector-2023="Results/regionalization_levels_Sector_contrib_total_ecosystem_quality.html"
+         data-src-tech-2023="Results/regionalization_levels_index_contrib_total_ecosystem_quality.html"
          data-has-unit="false"
          data-is-impact="true"
          data-title="Total ecosystem quality"
@@ -815,6 +850,8 @@
     <div class="nav-item" id="nav-remaining-hh"
          data-src-sector="Results/regionalization_levels_Sector_contrib_remaining_human_health_2050.html"
          data-src-tech="Results/regionalization_levels_index_contrib_remaining_human_health_2050.html"
+         data-src-sector-2023="Results/regionalization_levels_Sector_contrib_remaining_human_health.html"
+         data-src-tech-2023="Results/regionalization_levels_index_contrib_remaining_human_health.html"
          data-has-unit="false"
          data-is-impact="true"
          data-title="Remaining human health"
@@ -828,6 +865,8 @@
     <div class="nav-item" id="nav-remaining-eq"
          data-src-sector="Results/regionalization_levels_Sector_contrib_remaining_ecosystem_quality_2050.html"
          data-src-tech="Results/regionalization_levels_index_contrib_remaining_ecosystem_quality_2050.html"
+         data-src-sector-2023="Results/regionalization_levels_Sector_contrib_remaining_ecosystem_quality.html"
+         data-src-tech-2023="Results/regionalization_levels_index_contrib_remaining_ecosystem_quality.html"
          data-has-unit="false"
          data-is-impact="true"
          data-title="Remaining ecosystem quality"
@@ -841,6 +880,8 @@
     <div class="nav-item" id="nav-climate-change"
          data-src-sector="Results/regionalization_levels_Sector_contrib_climate_change_short_term_2050.html"
          data-src-tech="Results/regionalization_levels_index_contrib_climate_change_short_term_2050.html"
+         data-src-sector-2023="Results/regionalization_levels_Sector_contrib_climate_change_short_term.html"
+         data-src-tech-2023="Results/regionalization_levels_index_contrib_climate_change_short_term.html"
          data-has-unit="false"
          data-is-impact="true"
          data-title="Climate change"
@@ -854,6 +895,8 @@
     <div class="nav-item" id="nav-cc-territorial"
          data-src-sector="Results/regionalization_levels_Sector_contrib_climate_change_short_term_territorial_2050.html"
          data-src-tech="Results/regionalization_levels_index_contrib_climate_change_short_term_territorial_2050.html"
+         data-src-sector-2023="Results/regionalization_levels_Sector_contrib_climate_change_short_term_territorial.html"
+         data-src-tech-2023="Results/regionalization_levels_index_contrib_climate_change_short_term_territorial.html"
          data-has-unit="false"
          data-is-impact="true"
          data-title="Climate change — territorial"
@@ -867,6 +910,8 @@
     <div class="nav-item" id="nav-cc-abroad"
          data-src-sector="Results/regionalization_levels_Sector_contrib_climate_change_short_term_abroad_2050.html"
          data-src-tech="Results/regionalization_levels_index_contrib_climate_change_short_term_abroad_2050.html"
+         data-src-sector-2023="Results/regionalization_levels_Sector_contrib_climate_change_short_term_abroad.html"
+         data-src-tech-2023="Results/regionalization_levels_index_contrib_climate_change_short_term_abroad.html"
          data-has-unit="false"
          data-is-impact="true"
          data-title="Climate change — abroad"
@@ -892,6 +937,11 @@
           <p id="chart-desc">Electricity generation technologies across prospective-regionalization levels</p>
         </div>
         <div style="display:flex;gap:0.5rem;align-items:center;">
+          <div class="year-toggle" id="year-toggle" style="display:none;">
+            <button class="year-btn" onclick="switchYear('2023', this)">2023</button>
+            <button class="year-btn active" onclick="switchYear('2050', this)">2050</button>
+          </div>
+          <div class="toggle-group-sep" id="year-contrib-sep" style="display:none;"></div>
           <div class="unit-toggle" id="unit-toggle" style="display:none;">
             <button class="unit-btn active" onclick="switchUnit('a', this)">TWh/yr</button>
             <button class="unit-btn" onclick="switchUnit('b', this)">GW.yr/yr</button>
@@ -1297,6 +1347,7 @@
   let currentUnitMode = 'a';
   let currentDeltaMode = 'abs'; // 'abs' or 'delta'
   let currentContribMode = 'sector'; // 'sector' or 'tech'
+  let currentYearMode = '2050'; // '2023' or '2050'
   let currentNavItem = null;
 
   function loadChart(el) {
@@ -1352,13 +1403,22 @@
 
     // Contribution toggle (impact charts only)
     const contribToggle = document.getElementById('contrib-toggle');
+    const yearToggle    = document.getElementById('year-toggle');
+    const yearContribSep = document.getElementById('year-contrib-sep');
     if (isImpact) {
       contribToggle.style.display = '';
       contribToggle.querySelectorAll('.unit-btn').forEach((b, i) => {
         b.classList.toggle('active', (i === 0 && currentContribMode === 'sector') || (i === 1 && currentContribMode === 'tech'));
       });
+      yearToggle.style.display = '';
+      yearContribSep.style.display = '';
+      yearToggle.querySelectorAll('.year-btn').forEach((b) => {
+        b.classList.toggle('active', b.textContent.trim() === currentYearMode);
+      });
     } else {
       contribToggle.style.display = 'none';
+      yearToggle.style.display = 'none';
+      yearContribSep.style.display = 'none';
     }
 
     document.getElementById('chart-desc').innerHTML = resolveCurrentDesc(el);
@@ -1369,6 +1429,11 @@
     if (!el) return '';
     const isImpact = el.getAttribute('data-is-impact') === 'true';
     if (isImpact) {
+      if (currentYearMode === '2023') {
+        return currentContribMode === 'tech'
+          ? (el.getAttribute('data-src-tech-2023') || '')
+          : (el.getAttribute('data-src-sector-2023') || '');
+      }
       return currentContribMode === 'tech'
         ? (el.getAttribute('data-src-tech') || '')
         : (el.getAttribute('data-src-sector') || '');
@@ -1424,6 +1489,14 @@
     btn.classList.add('active');
     if (!currentNavItem) return;
     document.getElementById('chart-desc').innerHTML = resolveCurrentDesc(currentNavItem);
+    setChartIframe(resolveCurrentSrc(currentNavItem));
+  }
+
+  function switchYear(year, btn) {
+    currentYearMode = year;
+    document.getElementById('year-toggle').querySelectorAll('.year-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    if (!currentNavItem) return;
     setChartIframe(resolveCurrentSrc(currentNavItem));
   }
 
@@ -1666,12 +1739,14 @@
   function syncComparativeHash() {
     if (currentTab !== 'comparative' || !currentNavItem) return;
     const itemId = (currentNavItem.id || '').replace(/^nav-/, '');
+    const isImpact = currentNavItem.getAttribute('data-is-impact') === 'true';
     updateHash({
       tab: 'comparative',
       item: itemId,
       unit: currentUnitMode,
       delta: currentDeltaMode,
-      contrib: currentContribMode
+      contrib: currentContribMode,
+      year: isImpact ? currentYearMode : undefined
     });
   }
 
@@ -1731,6 +1806,14 @@
           const contribToggle = document.getElementById('contrib-toggle');
           const btns = contribToggle.querySelectorAll('.unit-btn');
           if (btns[1]) switchContrib('tech', btns[1]);
+        }
+        if (p.year && (p.year === '2023' || p.year === '2050')) {
+          const yearToggle = document.getElementById('year-toggle');
+          if (yearToggle.style.display !== 'none') {
+            const btns = yearToggle.querySelectorAll('.year-btn');
+            const target = p.year === '2023' ? btns[0] : btns[1];
+            if (target) switchYear(p.year, target);
+          }
         }
       }
     } else if (p.tab === 'per-level') {
@@ -1796,11 +1879,14 @@
     });
   });
 
-  // Comparative: nav items + unit/delta/contrib toggles
+  // Comparative: nav items + unit/delta/contrib/year toggles
   document.querySelectorAll('#sidebar-comparative .nav-item').forEach(el => {
     el.addEventListener('click', () => setTimeout(syncComparativeHash, 0));
   });
   document.querySelectorAll('#unit-toggle .unit-btn, #delta-toggle .unit-btn, #contrib-toggle .unit-btn').forEach(btn => {
+    btn.addEventListener('click', () => setTimeout(syncComparativeHash, 0));
+  });
+  document.querySelectorAll('#year-toggle .year-btn').forEach(btn => {
     btn.addEventListener('click', () => setTimeout(syncComparativeHash, 0));
   });
 
