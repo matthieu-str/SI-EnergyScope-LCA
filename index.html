@@ -482,6 +482,76 @@
     }
     .sens-sankey-grid.single-col { grid-template-columns: 1fr; }
 
+    /* ── Sensitivity sub-sidebar ── */
+    .sensitivity-pane-wrapper {
+      display: flex;
+      flex: 1;
+      overflow: hidden;
+      min-height: 0;
+    }
+    .sensitivity-subsidebar {
+      width: 200px;
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      overflow-y: auto;
+      flex-shrink: 0;
+      padding: 0.75rem 0;
+    }
+    .sensitivity-subsidebar::-webkit-scrollbar { width: 4px; }
+    .sensitivity-subsidebar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+    .sensitivity-main-area {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+      overflow: hidden;
+    }
+    .sens-subpane { display: none; flex: 1; flex-direction: column; min-height: 0; overflow: hidden; }
+    .sens-subpane.active { display: flex; }
+
+    /* Inline iframe for cost/impacts sub-panes */
+    .sens-iframe-wrap {
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+    }
+    .sens-iframe-wrap iframe {
+      flex: 1;
+      min-height: 0;
+      border: none;
+      background: white;
+      width: 100%;
+    }
+    .sens-sub-toolbar {
+      padding: 0.75rem 1.5rem;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 0.9rem;
+      flex-shrink: 0;
+      flex-wrap: wrap;
+    }
+    .sens-sub-toolbar label {
+      font-size: 12.5px;
+      font-weight: 500;
+      color: var(--text-muted);
+      white-space: nowrap;
+    }
+    .sens-sub-select {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      color: var(--text);
+      background: var(--surface);
+      border: 1px solid var(--border-strong);
+      border-radius: 7px;
+      padding: 5px 10px;
+      cursor: pointer;
+      min-width: 200px;
+    }
+    .sens-sub-select:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+
     /* ── About pane ── */
     .about-pane-wrapper {
       display: flex;
@@ -1030,67 +1100,146 @@
 
     <!-- ── Pane: Sensitivity ── -->
     <div class="pane" id="pane-sensitivity">
-      <div class="sensitivity-toolbar">
-        <label>Carbon capture and storage availability:</label>
-        <div class="cc-slider-wrap">
-          <span style="font-family:var(--mono);font-size:11px;color:var(--text-faint);">7</span>
-          <input type="range" class="cc-slider" id="cc-slider" min="7" max="32" value="7" step="0.5" oninput="updateSensitivity()">
-          <span style="font-family:var(--mono);font-size:11px;color:var(--text-faint);">32</span>
-          <span class="cc-value-badge" id="cc-value-badge">7 Mt CO₂/yr</span>
-        </div>
-        <div style="display:flex;align-items:center;gap:0.5rem;">
-          <label>Level:</label>
-          <select class="sens-level-select" id="sens-level-select" onchange="updateSensitivity()">
-            <option value="base_wo_iam">Def.</option>
-            <option value="base">IAM</option>
-            <option value="spat">IAM + Spat.</option>
-            <option value="spat_fore">IAM + Spat. + Fore.</option>
-            <option value="spat_back">IAM + Spat. + Back.</option>
-            <option value="spat_fore_back" selected>IAM + Spat. + Fore. + Back.</option>
-          </select>
-        </div>
-        <div style="display:flex;align-items:center;gap:0.5rem;">
-          <label>SSP:</label>
-          <select class="sens-level-select" id="sens-ssp-select" onchange="updateSensitivity()">
-            <option value="SSP5-H">SSP5-H</option>
-            <option value="SSP2-L">SSP2-L</option>
-          </select>
-        </div>
-        <div class="stype-tabs">
-          <button class="stype-btn active" onclick="switchSensSankeyType('energy', this)">Energy flows</button>
-          <button class="stype-btn" onclick="switchSensSankeyType('carbon', this)">Carbon flows</button>
-          <button class="stype-btn" onclick="switchSensSankeyType('both', this)">Both</button>
-        </div>
-      </div>
-      <div class="sensitivity-note">
-        Showing energy system configuration at the selected carbon capture and storage availability.
-      </div>
-      <div class="sens-sankey-grid single-col" id="sens-sankey-grid">
-        <div class="sankey-card" id="sens-card-energy">
-          <div class="sankey-card-header">
-            <div class="dot dot-energy"></div>
-            <span>Energy flows</span>
+      <div class="sensitivity-pane-wrapper">
+
+        <!-- Sub-sidebar -->
+        <aside class="sensitivity-subsidebar">
+          <div class="section-label">Analysis level</div>
+          <div class="nav-item active" id="sens-nav-system" onclick="switchSensSubpane('system', this)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 3H3v7h18V3z"/><path d="M21 14H3v7h18v-7z"/></svg>
+            System-level
           </div>
-          <div class="placeholder-frame" id="sens-energy-placeholder" style="flex:1;">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/><ellipse cx="12" cy="5" rx="9" ry="3"/></svg>
-            <strong>Sensitivity — Energy Sankey</strong>
-            <code id="sens-energy-path">Results/sensitivity/spat_fore_back/SSP5-H/sankey_1.html</code>
+          <div class="nav-group-sep"></div>
+          <div class="nav-item" id="sens-nav-technology" onclick="switchSensSubpane('technology', this)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg>
+            Technology-level
           </div>
-          <iframe id="sens-iframe-energy" src="" frameborder="0" style="display:none; flex:1; min-height:420px;"></iframe>
-        </div>
-        <div class="sankey-card" id="sens-card-carbon" style="display:none;">
-          <div class="sankey-card-header">
-            <div class="dot dot-carbon"></div>
-            <span>Carbon flows</span>
+          <div class="nav-item" id="sens-nav-cost" onclick="switchSensSubpane('cost', this)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+            Cost
           </div>
-          <div class="placeholder-frame" id="sens-carbon-placeholder" style="flex:1;">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
-            <strong>Sensitivity — Carbon Sankey</strong>
-            <code id="sens-carbon-path">Results/sensitivity/spat_fore_back/SSP5-H/sankey_carbon_1.html</code>
+          <div class="nav-item" id="sens-nav-impacts" onclick="switchSensSubpane('impacts', this)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg>
+            Environmental impacts
           </div>
-          <iframe id="sens-iframe-carbon" src="" frameborder="0" style="display:none; flex:1; min-height:420px;"></iframe>
-        </div>
-      </div>
+        </aside>
+
+        <!-- Main area with sub-panes -->
+        <div class="sensitivity-main-area">
+
+          <!-- Sub-pane: System-level (original sankey view) -->
+          <div class="sens-subpane active" id="sens-subpane-system">
+            <div class="sensitivity-toolbar">
+              <label>Carbon capture and storage availability:</label>
+              <div class="cc-slider-wrap">
+                <span style="font-family:var(--mono);font-size:11px;color:var(--text-faint);">7</span>
+                <input type="range" class="cc-slider" id="cc-slider" min="7" max="32" value="7" step="1" oninput="updateSensitivity()">
+                <span style="font-family:var(--mono);font-size:11px;color:var(--text-faint);">32</span>
+                <span class="cc-value-badge" id="cc-value-badge">7 Mt CO₂/yr</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:0.5rem;">
+                <label>Level:</label>
+                <select class="sens-level-select" id="sens-level-select" onchange="updateSensitivity()">
+                  <option value="base_wo_iam">Def.</option>
+                  <option value="base">IAM</option>
+                  <option value="spat">IAM + Spat.</option>
+                  <option value="spat_fore">IAM + Spat. + Fore.</option>
+                  <option value="spat_back">IAM + Spat. + Back.</option>
+                  <option value="spat_fore_back" selected>IAM + Spat. + Fore. + Back.</option>
+                </select>
+              </div>
+              <div style="display:flex;align-items:center;gap:0.5rem;">
+                <label>SSP:</label>
+                <select class="sens-level-select" id="sens-ssp-select" onchange="updateSensitivity()">
+                  <option value="SSP5-H">SSP5-H</option>
+                  <option value="SSP2-L">SSP2-L</option>
+                </select>
+              </div>
+              <div class="stype-tabs">
+                <button class="stype-btn active" onclick="switchSensSankeyType('energy', this)">Energy flows</button>
+                <button class="stype-btn" onclick="switchSensSankeyType('carbon', this)">Carbon flows</button>
+                <button class="stype-btn" onclick="switchSensSankeyType('both', this)">Both</button>
+              </div>
+            </div>
+            <div class="sensitivity-note">
+              Showing energy system configuration at the selected carbon capture and storage availability.
+            </div>
+            <div class="sens-sankey-grid single-col" id="sens-sankey-grid">
+              <div class="sankey-card" id="sens-card-energy">
+                <div class="sankey-card-header">
+                  <div class="dot dot-energy"></div>
+                  <span>Energy flows</span>
+                </div>
+                <div class="placeholder-frame" id="sens-energy-placeholder" style="flex:1;">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/><ellipse cx="12" cy="5" rx="9" ry="3"/></svg>
+                  <strong>Sensitivity — Energy Sankey</strong>
+                  <code id="sens-energy-path">Results/sensitivity/spat_fore_back/SSP5-H/sankey_1.html</code>
+                </div>
+                <iframe id="sens-iframe-energy" src="" frameborder="0" style="display:none; flex:1; min-height:420px;"></iframe>
+              </div>
+              <div class="sankey-card" id="sens-card-carbon" style="display:none;">
+                <div class="sankey-card-header">
+                  <div class="dot dot-carbon"></div>
+                  <span>Carbon flows</span>
+                </div>
+                <div class="placeholder-frame" id="sens-carbon-placeholder" style="flex:1;">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+                  <strong>Sensitivity — Carbon Sankey</strong>
+                  <code id="sens-carbon-path">Results/sensitivity/spat_fore_back/SSP5-H/sankey_carbon_1.html</code>
+                </div>
+                <iframe id="sens-iframe-carbon" src="" frameborder="0" style="display:none; flex:1; min-height:420px;"></iframe>
+              </div>
+            </div>
+          </div><!-- /sens-subpane-system -->
+
+          <!-- Sub-pane: Technology-level -->
+          <div class="sens-subpane" id="sens-subpane-technology">
+            <div class="sens-sub-toolbar">
+              <label for="sens-tech-select">Technology:</label>
+              <select class="sens-sub-select" id="sens-tech-select" onchange="updateSensTechIframe()">
+                <option value="carbon_seq_avail_alkaline_electrolysis.html">Alkaline electrolysis</option>
+                <option value="carbon_seq_avail_gasification_h2.html">Hydrogen from wood gasification</option>
+                <option value="carbon_seq_avail_h2.html">Hydrogen (total)</option>
+                <option value="carbon_seq_avail_ind_boiler_wood.html">Industrial wood boiler</option>
+                <option value="carbon_seq_avail_ind_direct_elec.html">Industrial electric heater</option>
+                <option value="carbon_seq_avail_new_wind_onshore.html">New wind onshore</option>
+                <option value="carbon_seq_avail_ng_ehp.html">Natural gas imports</option>
+                <option value="carbon_seq_avail_semi_lh_cng.html">Semi (long-distance) with compressed natural gas</option>
+                <option value="carbon_seq_avail_semi_lh_fc_h2.html">Semi (long-distance) with hydrogen fuel cell</option>
+                <option value="carbon_seq_avail_smr.html">Steam methane reforming</option>
+              </select>
+            </div>
+            <div class="sens-iframe-wrap">
+              <iframe id="sens-iframe-tech" src="" frameborder="0"></iframe>
+            </div>
+          </div><!-- /sens-subpane-technology -->
+
+          <!-- Sub-pane: Cost -->
+          <div class="sens-subpane" id="sens-subpane-cost">
+            <div class="sens-iframe-wrap">
+              <iframe id="sens-iframe-cost" src="" frameborder="0"></iframe>
+            </div>
+          </div><!-- /sens-subpane-cost -->
+
+          <!-- Sub-pane: Environmental impacts -->
+          <div class="sens-subpane" id="sens-subpane-impacts">
+            <div class="sens-sub-toolbar">
+              <label for="sens-impact-select">Impact category:</label>
+              <select class="sens-sub-select" id="sens-impact-select" onchange="updateSensImpactIframe()">
+                <option value="carbon_seq_avail_ccst.html">Climate change</option>
+                <option value="carbon_seq_avail_req.html">Remaining ecosystem quality</option>
+                <option value="carbon_seq_avail_rhh.html">Remaining human health</option>
+                <option value="carbon_seq_avail_tteq.html">Total ecosystem quality</option>
+                <option value="carbon_seq_avail_tthh.html">Total human health</option>
+              </select>
+            </div>
+            <div class="sens-iframe-wrap">
+              <iframe id="sens-iframe-impacts" src="" frameborder="0"></iframe>
+            </div>
+          </div><!-- /sens-subpane-impacts -->
+
+        </div><!-- /sensitivity-main-area -->
+      </div><!-- /sensitivity-pane-wrapper -->
     </div>
 
     <!-- ── Pane: About ── -->
@@ -1662,6 +1811,51 @@
     }
   }
 
+  // ── Sensitivity sub-pane switching ──
+  let currentSensSubpane = 'system';
+
+  function switchSensSubpane(name, navEl) {
+    currentSensSubpane = name;
+
+    // Update sidebar active state
+    document.querySelectorAll('.sensitivity-subsidebar .nav-item').forEach(el => el.classList.remove('active'));
+    navEl.classList.add('active');
+
+    // Show/hide sub-panes
+    document.querySelectorAll('.sens-subpane').forEach(p => p.classList.remove('active'));
+    document.getElementById('sens-subpane-' + name).classList.add('active');
+
+    // Lazily assign each iframe's src the first time its pane becomes visible.
+    // Plotly's responsive:true measures container width at load time — if the
+    // container is display:none (as hidden tabs are), it measures 0 and the
+    // figure renders at a stale fallback width, clipping the legend. Loading
+    // the iframe only after its tab is shown and laid out avoids this entirely.
+    //
+    // NOTE: iframe.src (the DOM property) always returns a resolved absolute
+    // URL, even when the HTML attribute is empty — so checking `!iframe.src`
+    // is always false and never trips. We check the raw attribute instead.
+    if (name === 'technology') {
+      const iframe = document.getElementById('sens-iframe-tech');
+      if (!iframe.getAttribute('src')) updateSensTechIframe();
+    } else if (name === 'cost') {
+      const iframe = document.getElementById('sens-iframe-cost');
+      if (!iframe.getAttribute('src')) iframe.src = 'Results/sensitivity/carbon_seq_avail_cost.html';
+    } else if (name === 'impacts') {
+      const iframe = document.getElementById('sens-iframe-impacts');
+      if (!iframe.getAttribute('src')) updateSensImpactIframe();
+    }
+  }
+
+  function updateSensTechIframe() {
+    const sel = document.getElementById('sens-tech-select');
+    document.getElementById('sens-iframe-tech').src = 'Results/sensitivity/' + sel.value;
+  }
+
+  function updateSensImpactIframe() {
+    const sel = document.getElementById('sens-impact-select');
+    document.getElementById('sens-iframe-impacts').src = 'Results/sensitivity/' + sel.value;
+  }
+
   // ── About nav: highlight active section on scroll ──
   (function() {
     const sectionIds = ['about-paper', 'about-levels', 'about-env', 'about-tools', 'about-app'];
@@ -1692,9 +1886,12 @@
   // ══════════════════════════════════════════════════
   //
   // Hash formats:
-  //   #tab=comparative&item=electricity&unit=a&delta=abs&contrib=sector
+  //   #tab=comparative&item=electricity&unit=a&delta=abs&contrib=sector&year=2050
   //   #tab=per-level&level=SSP5-H_spat&view=energy
-  //   #tab=sensitivity&level=spat_fore_back&ssp=SSP5-H&cc=12&view=energy
+  //   #tab=sensitivity&subpane=system&level=spat_fore_back&ssp=SSP5-H&cc=12&view=energy
+  //   #tab=sensitivity&subpane=technology&tech=carbon_seq_avail_new_wind_onshore.html
+  //   #tab=sensitivity&subpane=cost
+  //   #tab=sensitivity&subpane=impacts&impact=carbon_seq_avail_req.html
   //   #tab=about&section=levels   (also accepts plain #about-levels for backward compat)
   //
   let isApplyingRoute = false; // guards against feedback loops while restoring state
@@ -1758,10 +1955,20 @@
 
   function syncSensitivityHash() {
     if (currentTab !== 'sensitivity') return;
-    const level = document.getElementById('sens-level-select').value;
-    const ssp   = document.getElementById('sens-ssp-select').value;
-    const cc    = document.getElementById('cc-slider').value;
-    updateHash({ tab: 'sensitivity', level: level, ssp: ssp, cc: cc, view: currentSensSankeyType });
+    const subpane = currentSensSubpane || 'system';
+    const params = { tab: 'sensitivity', subpane: subpane };
+    if (subpane === 'system') {
+      params.level = document.getElementById('sens-level-select').value;
+      params.ssp   = document.getElementById('sens-ssp-select').value;
+      params.cc    = document.getElementById('cc-slider').value;
+      params.view  = currentSensSankeyType;
+    } else if (subpane === 'technology') {
+      params.tech = document.getElementById('sens-tech-select').value;
+    } else if (subpane === 'impacts') {
+      params.impact = document.getElementById('sens-impact-select').value;
+    }
+    // 'cost' has no sub-parameters — a single fixed plot
+    updateHash(params);
   }
 
   function syncAboutHash(sectionId) {
@@ -1829,27 +2036,52 @@
         if (idx !== undefined && btns[idx]) switchSankeyType(p.view, btns[idx]);
       }
     } else if (p.tab === 'sensitivity') {
-      if (p.level) {
-        const sel = document.getElementById('sens-level-select');
-        if ([...sel.options].some(o => o.value === p.level)) sel.value = p.level;
-      }
-      if (p.ssp) {
-        const sel = document.getElementById('sens-ssp-select');
-        if ([...sel.options].some(o => o.value === p.ssp)) sel.value = p.ssp;
-      }
-      if (p.cc) {
-        const slider = document.getElementById('cc-slider');
-        const ccNum = parseFloat(p.cc);
-        if (!isNaN(ccNum) && ccNum >= parseFloat(slider.min) && ccNum <= parseFloat(slider.max)) {
-          slider.value = ccNum;
+      // Restore which sub-section (System-level / Technology-level / Cost / Environmental impacts)
+      const subpaneNavMap = {
+        system: 'sens-nav-system',
+        technology: 'sens-nav-technology',
+        cost: 'sens-nav-cost',
+        impacts: 'sens-nav-impacts'
+      };
+      const targetSubpane = (p.subpane && subpaneNavMap[p.subpane]) ? p.subpane : 'system';
+      const navEl = document.getElementById(subpaneNavMap[targetSubpane]);
+      if (navEl) switchSensSubpane(targetSubpane, navEl);
+
+      if (targetSubpane === 'system') {
+        if (p.level) {
+          const sel = document.getElementById('sens-level-select');
+          if ([...sel.options].some(o => o.value === p.level)) sel.value = p.level;
         }
-      }
-      updateSensitivity();
-      if (p.view && p.view !== currentSensSankeyType) {
-        const btnMap = { energy: 0, carbon: 1, both: 2 };
-        const idx = btnMap[p.view];
-        const btns = document.querySelectorAll('#pane-sensitivity .stype-btn');
-        if (idx !== undefined && btns[idx]) switchSensSankeyType(p.view, btns[idx]);
+        if (p.ssp) {
+          const sel = document.getElementById('sens-ssp-select');
+          if ([...sel.options].some(o => o.value === p.ssp)) sel.value = p.ssp;
+        }
+        if (p.cc) {
+          const slider = document.getElementById('cc-slider');
+          const ccNum = parseFloat(p.cc);
+          if (!isNaN(ccNum) && ccNum >= parseFloat(slider.min) && ccNum <= parseFloat(slider.max)) {
+            slider.value = ccNum;
+          }
+        }
+        updateSensitivity();
+        if (p.view && p.view !== currentSensSankeyType) {
+          const btnMap = { energy: 0, carbon: 1, both: 2 };
+          const idx = btnMap[p.view];
+          const btns = document.querySelectorAll('#sens-subpane-system .stype-btn');
+          if (idx !== undefined && btns[idx]) switchSensSankeyType(p.view, btns[idx]);
+        }
+      } else if (targetSubpane === 'technology' && p.tech) {
+        const sel = document.getElementById('sens-tech-select');
+        if ([...sel.options].some(o => o.value === p.tech)) {
+          sel.value = p.tech;
+          updateSensTechIframe();
+        }
+      } else if (targetSubpane === 'impacts' && p.impact) {
+        const sel = document.getElementById('sens-impact-select');
+        if ([...sel.options].some(o => o.value === p.impact)) {
+          sel.value = p.impact;
+          updateSensImpactIframe();
+        }
       }
     } else if (p.tab === 'about' && p.section) {
       const target = document.getElementById('about-' + p.section);
@@ -1903,6 +2135,12 @@
   document.querySelectorAll('#pane-sensitivity .stype-btn').forEach(btn => {
     btn.addEventListener('click', () => setTimeout(syncSensitivityHash, 0));
   });
+  // Sensitivity: sub-sidebar (System-level / Technology-level / Cost / Environmental impacts) + dropdowns
+  document.querySelectorAll('.sensitivity-subsidebar .nav-item').forEach(el => {
+    el.addEventListener('click', () => setTimeout(syncSensitivityHash, 0));
+  });
+  document.getElementById('sens-tech-select').addEventListener('change', () => setTimeout(syncSensitivityHash, 0));
+  document.getElementById('sens-impact-select').addEventListener('change', () => setTimeout(syncSensitivityHash, 0));
 
   // About: anchor links already navigate via native hash; just sync our format alongside
   document.querySelectorAll('#sidebar-about a.nav-item').forEach(a => {
