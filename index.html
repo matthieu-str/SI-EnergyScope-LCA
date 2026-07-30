@@ -787,6 +787,31 @@
   ══════════════════════════════════════════ -->
   <aside id="sidebar-comparative">
 
+    <div class="section-label">Overview</div>
+
+    <div class="nav-item" id="nav-overview-impacts"
+         data-src="Results/parallel_coord_impacts_abs.html"
+         data-is-overview="true"
+         data-table="S10"
+         data-title="Impacts — parallel coordinates"
+         data-desc="Environmental impact profiles across all prospective-regionalization levels. Impacts are assessed with the more advanced regionalization level (i.e., <i>Spat. Fore. Back.</i>) for both prospective background scenarios, i.e., SSP5-H and SSP2-L."
+         onclick="loadChart(this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-leaf-icon lucide-leaf"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg>
+      Impacts
+    </div>
+
+    <div class="nav-item" id="nav-overview-config"
+         data-src="Results/parallel_coord_config.html"
+         data-is-overview="true"
+         data-table="S9"
+         data-title="Configurations — parallel coordinates"
+         data-desc="Main characteristics of energy system configurations across all prospective-regionalization levels"
+         onclick="loadChart(this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-sliders-horizontal-icon lucide-sliders-horizontal"><line x1="21" x2="14" y1="4" y2="4"/><line x1="10" x2="3" y1="4" y2="4"/><line x1="21" x2="12" y1="12" y2="12"/><line x1="8" x2="3" y1="12" y2="12"/><line x1="21" x2="16" y1="20" y2="20"/><line x1="12" x2="3" y1="20" y2="20"/><line x1="14" x2="14" y1="2" y2="6"/><line x1="8" x2="8" y1="10" y2="14"/><line x1="16" x2="16" y1="18" y2="22"/></svg>
+      Configurations
+    </div>
+
+    <div class="nav-group-sep"></div>
     <div class="section-label">Energy system configurations</div>
 
     <div class="nav-item active" id="nav-electricity"
@@ -1532,8 +1557,9 @@
     el.classList.add('active');
     currentNavItem = el;
 
-    const isImpact = el.getAttribute('data-is-impact') === 'true';
-    const isConfig = !isImpact;
+    const isImpact   = el.getAttribute('data-is-impact') === 'true';
+    const isOverview = el.getAttribute('data-is-overview') === 'true';
+    const isConfig = !isImpact && !isOverview;
     const hasUnit  = el.getAttribute('data-has-unit') === 'true';
     const srcAlt   = el.getAttribute('data-src-alt') || '';
     const title    = el.getAttribute('data-title') || '';
@@ -1644,7 +1670,12 @@
 
   function resolveCurrentDesc(el) {
     if (!el) return '';
-    const isImpact = el.getAttribute('data-is-impact') === 'true';
+    const isImpact   = el.getAttribute('data-is-impact') === 'true';
+    const isOverview = el.getAttribute('data-is-overview') === 'true';
+    if (isOverview) {
+      const table = el.getAttribute('data-table');
+      return linkifyDesc(el.getAttribute('data-desc') || '') + citationLine(table);
+    }
     if (isImpact) {
       const raw = currentContribMode === 'tech'
         ? (el.getAttribute('data-desc-tech') || '')
