@@ -1764,6 +1764,12 @@
     'SSP2-L_spat_fore_back':['sankey_SSP2-L_spat_fore_back','sankey_carbon_spat_fore_back-SSP2-L'],
   };
 
+  // Extra caption note shown only for 2050 carbon-flow Sankeys (leave '' to show nothing extra).
+  const CARBON_SANKEY_2050_NOTE = 'The addition to the atmosphere stock represents the net carbon emissions, while ' +
+          'the addition to the technosphere stock represents the stored carbon. Despite the territorial net-zero ' +
+          'constraint, the addition to the atmosphere stock is not zero because this chart represents life-cycle emissions, ' +
+          'including those occurring abroad. ';
+
   function updateSankeys() {
     const level = document.getElementById('level-select').value;
     const paths = LEVEL_PATHS[level] || ['', ''];
@@ -1778,7 +1784,12 @@
     const energyTable = level === '2023' ? 'S2' : 'S9';
     const carbonTable  = level === '2023' ? 'S5' : 'S8';
     document.getElementById('energy-sankey-caption').textContent = `Underlying data are available in Table ${energyTable} of the Supplementary Information SI2`;
-    document.getElementById('carbon-sankey-caption').textContent  = `Underlying data are available in Table ${carbonTable} of the Supplementary Information SI2`;
+
+    let carbonCaption = `Underlying data are available in Table ${carbonTable} of the Supplementary Information SI2`;
+    if (level !== '2023' && CARBON_SANKEY_2050_NOTE) {
+      carbonCaption = `${CARBON_SANKEY_2050_NOTE}` + carbonCaption;
+    }
+    document.getElementById('carbon-sankey-caption').textContent = carbonCaption;
 
     setSankeyIframe('energy', energySrc);
     setSankeyIframe('carbon', carbonSrc);
