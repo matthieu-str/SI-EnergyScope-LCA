@@ -1041,7 +1041,7 @@
       <div class="chart-header" id="comparative-header">
         <div class="chart-header-left">
           <h2 id="chart-title">Electricity production</h2>
-          <p id="chart-desc">Electricity generation technologies across <a href="https://matthieu-str.github.io/SI-EnergyScope-LCA/#tab=about&amp;section=levels" target="_blank" style="color:var(--accent);text-decoration:none;border-bottom:1px dotted var(--accent);">prospective-regionalization levels</a></p>
+          <p id="chart-desc">Electricity generation technologies across <a href="https://matthieu-str.github.io/SI-EnergyScope-Prospective-Regionalized-LCA/#tab=about&amp;section=levels" target="_blank" style="color:var(--accent);text-decoration:none;border-bottom:1px dotted var(--accent);">prospective-regionalization levels</a></p>
         </div>
         <div style="display:flex;gap:0.5rem;align-items:center;">
           <div class="year-toggle" id="year-toggle" style="display:none;">
@@ -1493,7 +1493,7 @@
             <h3 id="about-app">Using this application</h3>
             <p>This application has three main views:</p>
             <p>
-              <strong>Comparative view</strong> — Browse energy system configurations and environmental impact profiles across all <a href="https://matthieu-str.github.io/SI-EnergyScope-LCA/#tab=about&amp;section=levels" target="_blank" style="color:var(--accent);text-decoration:none;border-bottom:1px dotted var(--accent);">prospective-regionalization levels</a> simultaneously. Use the sidebar to select a chart category. For electricity, a unit toggle (TWh/yr ↔ GW) is available.
+              <strong>Comparative view</strong> — Browse energy system configurations and environmental impact profiles across all <a href="https://matthieu-str.github.io/SI-EnergyScope-Prospective-Regionalized-LCA/#tab=about&amp;section=levels" target="_blank" style="color:var(--accent);text-decoration:none;border-bottom:1px dotted var(--accent);">prospective-regionalization levels</a> simultaneously. Use the sidebar to select a chart category. For electricity, a unit toggle (TWh/yr ↔ GW) is available.
             </p>
             <p>
               <strong>Per-level view</strong> — Inspect the energy and carbon flow Sankey diagrams for a specific prospective-regionalization level and SSP scenario. Use the dropdown to select a configuration and the tabs to toggle between flow types.
@@ -1657,7 +1657,7 @@
     return src;
   }
 
-  const LEVELS_URL = 'https://matthieu-str.github.io/SI-EnergyScope-LCA/#tab=about&section=levels';
+  const LEVELS_URL = 'https://matthieu-str.github.io/SI-EnergyScope-Prospective-Regionalized-LCA/#tab=about&section=levels';
   const LEVELS_LINK = `<a href="${LEVELS_URL}" target="_blank" style="color:var(--accent);text-decoration:none;border-bottom:1px dotted var(--accent);">prospective-regionalization levels</a>`;
 
   function linkifyDesc(text) {

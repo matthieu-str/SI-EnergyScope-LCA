@@ -1,4 +1,4 @@
-# SI-EnergyScope-LCA
+# SI-EnergyScope-Prospective-Regionalized-LCA
 
 Supplementary interactive dashboard for the paper:
 
@@ -6,7 +6,7 @@ Supplementary interactive dashboard for the paper:
 
 ## 🌐 Dashboard
 
-**[https://matthieu-str.github.io/SI-EnergyScope-LCA/](https://matthieu-str.github.io/SI-EnergyScope-LCA/)**
+**[https://matthieu-str.github.io/SI-EnergyScope-Prospective-Regionalized-LCA/](https://matthieu-str.github.io/SI-EnergyScope-Prospective-Regionalized-LCA/)**
 
 The dashboard allows interactive exploration of the paper's results across four views:
 
