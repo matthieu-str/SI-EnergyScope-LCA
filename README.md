@@ -2,7 +2,7 @@
 
 Supplementary interactive dashboard for the paper:
 
-> Souttre M., Chuat A., Schnidrig J., Fischer L., Maj J., Majeau-Bettez G., Maréchal F., Margni M. (2026). Regionalized and prospective life-cycle assessment in energy system models: evaluating the effects on energy planning and environmental performance. Submitted to *Renewable and Sustainable Energy Reviews*.
+> Souttre M., Chuat A., Schnidrig J., Fischer L., Maj J., Majeau-Bettez G., Maréchal F., Margni M. (2026). Regionalized and prospective life-cycle assessment in energy system models: evaluating the effects on energy planning and environmental performance.
 
 ## 🌐 Dashboard
 
